@@ -11,7 +11,7 @@ fun main() {
             val result = calculator.calculate(key, numA, numB)
             println(result)
         } catch (illegalArgumentException: IllegalArgumentException) {
-            illegalArgumentException.stackTrace
+            println(illegalArgumentException)
             continue
         }
         println("계산을 계속 하시겠습니까?[y]")
