@@ -1,5 +1,10 @@
 package com.potatomeme.calculator.level3
 
+import com.potatomeme.calculator.level3.operaton.AddOperation
+import com.potatomeme.calculator.level3.operaton.DivideOperation
+import com.potatomeme.calculator.level3.operaton.MultiplyOperation
+import com.potatomeme.calculator.level3.operaton.SubtractOperation
+
 //책임 : 전체적인 동작을 관리
 class Calculator {
     fun calculate(key: Int, numA: Double, numB: Double): String {
