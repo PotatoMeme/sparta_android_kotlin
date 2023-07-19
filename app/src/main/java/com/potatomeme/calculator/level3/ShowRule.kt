@@ -23,11 +23,9 @@ class ShowRule {
             } else {
                 println("값이 맞지 않습니다! 값을 확인해주세요!")
             }
-
         }
 
         if (key == Key.CALCULATE_STOP) {
-            println("계산을 종료하겠습니다.")
             return Triple(Key.CALCULATE_STOP, 0.0, 0.0)
         }
 
