@@ -10,15 +10,16 @@ class Calculator {
         Key.CALCULATE_MINUS,
         Key.CALCULATE_MULTIPLY,
         Key.CALCULATE_DEVIDE,
+        Key.CALCULATE_REMAIN,
     )
 
     fun calculate() {
         println("계산을 진행하겠습니다.")
         println(
             "계산의 종류\n" +
-                    "-----------------------------------------------------------\n" +
-                    "0 : 종료 | 1 : 더하기 | 2 : 빼기 | 3 : 곱하기 | 4 : 나누기 \n" +
-                    "-----------------------------------------------------------"
+                    "------------------------------------------------------------------------\n" +
+                    "0 : 종료 | 1 : 더하기 | 2 : 빼기 | 3 : 곱하기 | 4 : 나누기 | 5 : 나머지\n" +
+                    "------------------------------------------------------------------------"
         )
 
         // 계산 종류 확인용
@@ -54,7 +55,7 @@ class Calculator {
 
             val numAIsCurrect = readList[0].toDoubleOrNull() != null
             val numBIsCurrect =
-                readList[1].toDoubleOrNull() != null && (key != Key.CALCULATE_DEVIDE || readList[1].toDouble() != 0.0)
+                readList[1].toDoubleOrNull() != null && ((key != Key.CALCULATE_DEVIDE && key != Key.CALCULATE_REMAIN) || readList[1].toDouble() != 0.0)
 
             if (numAIsCurrect && numBIsCurrect) {
                 numA = readList[0].toDouble()
@@ -63,7 +64,7 @@ class Calculator {
             }
 
             if (!numAIsCurrect) println("인자A값을 확인해주세요")
-            if (!numBIsCurrect) println("인자B값을 확인해주세요, 나누기의 경우 인자B의경우 0을 넣으실수 없습니다")
+            if (!numBIsCurrect) println("인자B값을 확인해주세요, 나누기나 나머지의 경우 인자B의경우 0을 넣으실수 없습니다")
         }
 
         when (key) {
@@ -71,6 +72,7 @@ class Calculator {
             Key.CALCULATE_MINUS -> println("계산결과 : ${minus(numA, numB)}")
             Key.CALCULATE_MULTIPLY -> println("계산결과 : ${multiply(numA, numB)}")
             Key.CALCULATE_DEVIDE -> println("계산결과 : ${devide(numA, numB)}")
+            Key.CALCULATE_REMAIN -> println("계산결과 : ${remain(numA, numB)}")
         }
 
         println("계산을 계속 하시겠습니까?[y,n]")
@@ -84,4 +86,5 @@ class Calculator {
     private fun minus(a: Double, b: Double) = a - b
     private fun multiply(a: Double, b: Double) = a * b
     private fun devide(a: Double, b: Double): Double = a / b
+    private fun remain(a: Double, b: Double): Double = a % b
 }
