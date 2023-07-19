@@ -1,5 +1,5 @@
 package com.potatomeme.calculator.level4
 
-class AddOperation {
-    fun operate(a: Double, b: Double) = a + b
+class AddOperation : AbstractOperation() {
+    override fun operate(a: Double, b: Double) = a + b
 }
