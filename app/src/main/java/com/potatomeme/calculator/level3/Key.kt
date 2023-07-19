@@ -3,8 +3,15 @@ package com.potatomeme.calculator.level3
 object Key {
     const val CALCULATE_STOP = 0
     const val CALCULATE_ADD = 1
-    const val CALCULATE_MINUS = 2
+    const val CALCULATE_SUBTRACT = 2
     const val CALCULATE_MULTIPLY = 3
-    const val CALCULATE_DEVIDE = 4
-    const val CALCULATE_REMAIN = 5
+    const val CALCULATE_DIVIDE = 4
+
+    val keys = setOf(
+        CALCULATE_STOP,
+        CALCULATE_ADD,
+        CALCULATE_SUBTRACT,
+        CALCULATE_MULTIPLY,
+        CALCULATE_DIVIDE,
+    )
 }
