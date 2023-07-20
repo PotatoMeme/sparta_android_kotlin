@@ -15,7 +15,7 @@ fun main() {
     while (true) {
         when (rule.showMenuSelect()) {
             Key.MENU_RESERVATION -> {
-                val userName: String = rule.showSelectName()
+                val userName: String = rule.showSelectName(Key.MENU_RESERVATION)
                 val roomNum: Int = rule.showSelectRoomName()
                 val checkInDate: String
                 while (true){
@@ -62,7 +62,10 @@ fun main() {
             }
 
             Key.MENU_EXIT -> break
-            Key.MENU_PRINT_CHARGE_HISTORY -> {}
+            Key.MENU_PRINT_CHARGE_HISTORY -> {
+                val userName = rule.showSelectName(Key.MENU_PRINT_CHARGE_HISTORY)
+                print(service.getUserChargeLog(userName))
+            }
             Key.MENU_RESERVATION_MODIFY -> {}
         }
     }

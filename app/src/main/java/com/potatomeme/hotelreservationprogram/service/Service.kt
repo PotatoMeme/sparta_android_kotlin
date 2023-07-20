@@ -51,6 +51,18 @@ class Service private constructor() {
         }
     }
 
+    fun getUserChargeLog(userName: String): String = buildString {
+        logChargeList.filter { it.userName == userName }.let { list ->
+            if (list.isEmpty()) {
+                appendLine("예약된 사용자를 찾을수 없습니다.")
+            } else {
+                list.forEachIndexed { index, logCharge ->
+                    append(index + 1).append(". ").appendLine(logCharge.log)
+                }
+            }
+        }
+    }
+
     companion object {
         @Volatile
         private var instance: Service? = null

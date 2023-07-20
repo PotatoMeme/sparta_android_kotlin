@@ -19,9 +19,14 @@ class ShowRule {
         }
     }
 
-    fun showSelectName(): String {
+    fun showSelectName(type:Int): String {
+        val questionStr = when(type){
+            Key.MENU_RESERVATION ->"예약자분의 성함을 입력해주세요"
+            Key.MENU_PRINT_CHARGE_HISTORY -> "조회하실 사용자의 이름을 입력해주세요"
+            else -> throw IllegalArgumentException("unknown type($type)")
+        }
         while (true) {
-            println("예약자분의 성함을 입력해주세요")
+            println(questionStr)
             val name = readLine()
             if (!name.isNullOrBlank()) return name
             System.err.println("공백입력은 되지않습니다. 이름을 입력해주세요")
