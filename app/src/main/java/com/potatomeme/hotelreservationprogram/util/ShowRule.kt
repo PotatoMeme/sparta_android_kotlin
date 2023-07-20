@@ -1,12 +1,9 @@
 package com.potatomeme.hotelreservationprogram.util
 
-import android.icu.text.SimpleDateFormat
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.potatomeme.hotelreservationprogram.Key
-import java.lang.Exception
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
