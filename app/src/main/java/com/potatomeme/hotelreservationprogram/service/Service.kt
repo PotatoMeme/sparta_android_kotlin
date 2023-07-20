@@ -23,9 +23,23 @@ class Service private constructor() {
         _logChargeList.add(logCharge)
     }
 
+    fun modifyReservationToIdx(idx: Int,reservation: Reservation) {
+        _reservationList[idx] = reservation
+    }
+    fun removeReservationToIdx(idx: Int) {
+        _reservationList.removeAt(idx)
+    }
+
     fun checkCheckInDate(roomNum: Int, currentCheckInDate: String): Boolean {
         return reservationList.all { reservation ->
             reservation.roomNumber != roomNum || ((reservation.checkInDate > currentCheckInDate) || (reservation.checkOutDate <= currentCheckInDate))
+        }
+    }
+
+    fun checkCheckInDate(roomNum: Int, currentCheckInDate: String, ignorIdx: Int): Boolean {
+        var idx = 0
+        return reservationList.all { reservation ->
+            idx++ == ignorIdx || reservation.roomNumber != roomNum || ((reservation.checkInDate > currentCheckInDate) || (reservation.checkOutDate <= currentCheckInDate))
         }
     }
 
@@ -36,6 +50,18 @@ class Service private constructor() {
     ): Boolean {
         return reservationList.all { reservation ->
             reservation.roomNumber != roomNum || ((reservation.checkInDate > currentCheckInDate && reservation.checkInDate >= currentCheckOutDate) || (reservation.checkOutDate <= currentCheckInDate))
+        }
+    }
+
+    fun checkCheckOutDate(
+        roomNum: Int,
+        currentCheckInDate: String,
+        currentCheckOutDate: String,
+        ignorIdx: Int,
+    ): Boolean {
+        var idx = 0
+        return reservationList.all { reservation ->
+            idx++ == ignorIdx || reservation.roomNumber != roomNum || ((reservation.checkInDate > currentCheckInDate && reservation.checkInDate >= currentCheckOutDate) || (reservation.checkOutDate <= currentCheckInDate))
         }
     }
 
@@ -50,6 +76,13 @@ class Service private constructor() {
             append(index + 1).append(". ").appendLine(reservation.toString())
         }
     }
+
+    fun getUserReservationListWithIndex(userName: String): List<Pair<Int, String>> {
+        return reservationList.mapIndexed { index, reservation -> Pair(index, reservation) }
+            .filter { reservationPair -> reservationPair.second.userName == userName }
+            .map { reservationPair -> Pair(reservationPair.first, reservationPair.toString()) }
+    }
+
 
     fun getUserChargeLog(userName: String): String = buildString {
         logChargeList.filter { it.userName == userName }.let { list ->

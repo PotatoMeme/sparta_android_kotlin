@@ -23,6 +23,7 @@ class ShowRule {
         val questionStr = when(type){
             Key.MENU_RESERVATION ->"예약자분의 성함을 입력해주세요"
             Key.MENU_PRINT_CHARGE_HISTORY -> "조회하실 사용자의 이름을 입력해주세요"
+            Key.MENU_RESERVATION_MODIFY->"예약을 변경할 사용자 이름을 입력하세요"
             else -> throw IllegalArgumentException("unknown type($type)")
         }
         while (true) {
