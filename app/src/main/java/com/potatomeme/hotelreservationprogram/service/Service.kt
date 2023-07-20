@@ -11,7 +11,7 @@ class Service private constructor() {
 
     //금액 * 입금 출금내역 목록
     private val _logChargeList: MutableList<LogCharge> = mutableListOf()
-    val logChargeList : List<LogCharge>
+    val logChargeList: List<LogCharge>
         get() = _logChargeList
 
 
@@ -19,8 +19,36 @@ class Service private constructor() {
         _reservationList.add(reservation)
     }
 
-    fun addCharge(logCharge: LogCharge){
+    fun addCharge(logCharge: LogCharge) {
         _logChargeList.add(logCharge)
+    }
+
+    fun checkCheckInDate(roomNum: Int, currentCheckInDate: String): Boolean {
+        return reservationList.all { reservation ->
+            reservation.roomNumber != roomNum || ((reservation.checkInDate > currentCheckInDate) || (reservation.checkOutDate <= currentCheckInDate))
+        }
+    }
+
+    fun checkCheckOutDate(
+        roomNum: Int,
+        currentCheckInDate: String,
+        currentCheckOutDate: String,
+    ): Boolean {
+        return reservationList.all { reservation ->
+            reservation.roomNumber != roomNum || ((reservation.checkInDate > currentCheckInDate && reservation.checkInDate >= currentCheckOutDate) || (reservation.checkOutDate <= currentCheckInDate))
+        }
+    }
+
+    fun getReservationListStr(): String = buildString {
+        reservationList.forEachIndexed { index, reservation ->
+            append(index + 1).append(". ").appendLine(reservation.toString())
+        }
+    }
+
+    fun getSortedReservationListStr(): String = buildString {
+        reservationList.sortedBy { it.userName }.forEachIndexed { index, reservation ->
+            append(index + 1).append(". ").appendLine(reservation.toString())
+        }
     }
 
     companion object {
