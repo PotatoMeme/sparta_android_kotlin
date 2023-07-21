@@ -1,5 +1,6 @@
 package com.potatomeme.hotelreservationprogram.service
 
+import com.potatomeme.hotelreservationprogram.Key
 import com.potatomeme.hotelreservationprogram.model.LogCharge
 import com.potatomeme.hotelreservationprogram.model.Reservation
 
@@ -67,20 +68,20 @@ class Service private constructor() {
 
     fun getReservationListStr(): String = buildString {
         reservationList.forEachIndexed { index, reservation ->
-            append(index + 1).append(". ").appendLine(reservation.toString())
+            append(index + 1).append(". ").appendLine(reservation.toString(Key.MENU_PRINT_RESERVATION_LIST))
         }
     }
 
     fun getSortedReservationListStr(): String = buildString {
         reservationList.sortedBy { it.userName }.forEachIndexed { index, reservation ->
-            append(index + 1).append(". ").appendLine(reservation.toString())
+            append(index + 1).append(". ").appendLine(reservation.toString(Key.MENU_PRINT_RESERVATION_SORTED_LIST))
         }
     }
 
     fun getUserReservationListWithIndex(userName: String): List<Pair<Int, String>> {
         return reservationList.mapIndexed { index, reservation -> Pair(index, reservation) }
             .filter { reservationPair -> reservationPair.second.userName == userName }
-            .map { reservationPair -> Pair(reservationPair.first, reservationPair.toString()) }
+            .map { reservationPair -> Pair(reservationPair.first, reservationPair.second.toString(Key.RESERVATION_MODIFY)) }
     }
 
 
@@ -90,7 +91,7 @@ class Service private constructor() {
                 appendLine("예약된 사용자를 찾을수 없습니다.")
             } else {
                 list.forEachIndexed { index, logCharge ->
-                    append(index + 1).append(". ").appendLine(logCharge.log)
+                    append(index + 1).append(". ").appendLine(logCharge.toString())
                 }
             }
         }

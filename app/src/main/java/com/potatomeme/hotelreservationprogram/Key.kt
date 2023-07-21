@@ -13,6 +13,10 @@ object Key {
     const val RESERVATION_MODIFY = 1
     const val RESERVATION_CANCEL = 2
 
+    const val CHARGE_FIRST = 1
+    const val CHARGE_DEPOSIT = 2
+    const val CHARGE_REFUND = 3
+
     val MENU_KEYS = setOf(
         MENU_RESERVATION,
         MENU_PRINT_RESERVATION_LIST,

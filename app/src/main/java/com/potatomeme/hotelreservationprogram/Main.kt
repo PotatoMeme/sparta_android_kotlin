@@ -6,6 +6,9 @@ import com.potatomeme.hotelreservationprogram.model.LogCharge
 import com.potatomeme.hotelreservationprogram.model.Reservation
 import com.potatomeme.hotelreservationprogram.service.Service
 import com.potatomeme.hotelreservationprogram.util.ShowRule
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun main() {
@@ -35,19 +38,21 @@ fun main() {
                     }
                     System.err.println("해당 날짜에 이미 방을 사용중입니다. 다른 날짜를 입력해주세요")
                 }
-                service.addReservation(Reservation(userName, roomNum, checkInDate, checkOutDate))
-                service.addCharge(
-                    LogCharge(
+                val firstCharge = (100000..200000).random()
+                val depositCharge = (100000..200000).random()
+
+                service.addReservation(
+                    Reservation(
                         userName,
-                        "초기 금액으로 ${(100000..200000).random()} 원 입금되었습니다."
+                        roomNum,
+                        checkInDate,
+                        checkOutDate,
+                        firstCharge,
+                        depositCharge
                     )
                 )
-                service.addCharge(
-                    LogCharge(
-                        userName,
-                        "예약금으로 ${(100000..200000).random()} 원 출금되었습니다."
-                    )
-                )
+                service.addCharge(LogCharge(userName, Key.CHARGE_FIRST, firstCharge))
+                service.addCharge(LogCharge(userName, Key.CHARGE_DEPOSIT, firstCharge))
                 println("호텔 예약이 완료되었습니다.")
             }
 
@@ -89,11 +94,12 @@ fun main() {
                         }
                         if (line.toIntOrNull() != null && line.toInt() in 1..reservationList.size) {
                             selectedNum = line.toInt() - 1
-                            val ignorIdx = reservationList[selectedNum].first
+                            val currentReservationIdx: Int = reservationList[selectedNum].first
+                            val beforeReservation: Reservation =
+                                service.reservationList[currentReservationIdx]
                             println("해당 예약을 어떻게 하시겠습니까? 1. 변경 2. 취소 / 이외번호. 메뉴로 돌아가기")
                             when (readLine()!!.toIntOrNull()) {
                                 Key.RESERVATION_MODIFY -> {
-                                    val userName: String = rule.showSelectName(Key.MENU_RESERVATION)
                                     val roomNum: Int = rule.showSelectRoomName()
                                     val checkInDate: String
                                     while (true) {
@@ -101,7 +107,7 @@ fun main() {
                                         if (service.checkCheckInDate(
                                                 roomNum,
                                                 currentCheckInDate,
-                                                ignorIdx
+                                                currentReservationIdx
                                             )
                                         ) {
                                             checkInDate = currentCheckInDate
@@ -117,7 +123,7 @@ fun main() {
                                                 roomNum,
                                                 checkInDate,
                                                 currentCheckOutDate,
-                                                ignorIdx
+                                                currentReservationIdx
                                             )
                                         ) {
                                             checkOutDate = currentCheckOutDate
@@ -126,14 +132,32 @@ fun main() {
                                         System.err.println("해당 날짜에 이미 방을 사용중입니다. 다른 날짜를 입력해주세요")
                                     }
                                     service.modifyReservationToIdx(
-                                        ignorIdx,
-                                        Reservation(userName, roomNum, checkInDate, checkOutDate)
+                                        currentReservationIdx,
+                                        Reservation(
+                                            userName,
+                                            roomNum,
+                                            checkInDate,
+                                            checkOutDate,
+                                            beforeReservation.firstCharge,
+                                            beforeReservation.depositCharge
+                                        )
                                     )
                                     println("수정이 완료 되었습니다.")
                                 }
 
                                 Key.RESERVATION_CANCEL -> {
-                                    service.removeReservationToIdx(reservationList[selectedNum].first)
+                                    service.removeReservationToIdx(currentReservationIdx)
+                                    val refundCash: Int =
+                                        (beforeReservation.depositCharge * calculateRefundRate(
+                                            beforeReservation.checkInDate
+                                        )).toInt()
+                                    service.addCharge(
+                                        LogCharge(
+                                            userName,
+                                            Key.CHARGE_REFUND,
+                                            refundCash
+                                        )
+                                    )
                                     println("[취소 유의사항]")
                                     println("체크인 3일 이전 취소 예약금 환불 불가")
                                     println("체크인 5일 이전 취소 예약금 30% 환불")
@@ -155,4 +179,25 @@ fun main() {
     println("호텔 예약 프로그램을 종료 합니다.")
 }
 
+fun dateDifferenceInDays(date1: String, date2: String): Long {
+    val dateFormat = SimpleDateFormat("yyyyMMdd")
+    val parsedDate1 = dateFormat.parse(date1)
+    val parsedDate2 = dateFormat.parse(date2)
 
+    val differenceInMillis = parsedDate2.time - parsedDate1.time
+    return differenceInMillis / (24 * 60 * 60 * 1000)
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun calculateRefundRate(checkInDate: String): Double {
+    val now: String = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
+    val differenceInDays: Long = dateDifferenceInDays(now, checkInDate)
+
+    return when {
+        differenceInDays >= 30 -> 1.0 // 30일 이전이면 100% 환불 (1.0 = 100%)
+        differenceInDays >= 14 -> 0.8 // 14일 이전이면 80% 환불 (0.8 = 80%)
+        differenceInDays >= 7 -> 0.5  // 7일 이전이면 50% 환불 (0.5 = 50%)
+        differenceInDays >= 5 -> 0.3  // 5일 이전이면 30% 환불 (0.3 = 30%)
+        else -> 0.0                  // 그 외의 경우 0% 환불 (0.0 = 0%)
+    }
+}
