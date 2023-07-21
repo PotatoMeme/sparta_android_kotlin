@@ -39,7 +39,7 @@ fun main() {
                     System.err.println("해당 날짜에 이미 방을 사용중입니다. 다른 날짜를 입력해주세요")
                 }
                 val firstCharge = (100000..200000).random()
-                val depositCharge = (100000..200000).random()
+                val depositCharge = (50000..firstCharge).random()
 
                 service.addReservation(
                     Reservation(
@@ -131,6 +131,7 @@ fun main() {
                                         }
                                         System.err.println("해당 날짜에 이미 방을 사용중입니다. 다른 날짜를 입력해주세요")
                                     }
+                                    val depositCharge = (50000..beforeReservation.firstCharge).random()
                                     service.modifyReservationToIdx(
                                         currentReservationIdx,
                                         Reservation(
@@ -139,9 +140,15 @@ fun main() {
                                             checkInDate,
                                             checkOutDate,
                                             beforeReservation.firstCharge,
-                                            beforeReservation.depositCharge
+                                            depositCharge
                                         )
                                     )
+                                    val refundCash: Int =
+                                        (beforeReservation.depositCharge * calculateRefundRate(
+                                            beforeReservation.checkInDate
+                                        )).toInt()
+                                    service.addCharge(LogCharge(userName,Key.CHARGE_REFUND_MODIFY,refundCash))
+                                    service.addCharge(LogCharge(userName,Key.CHARGE_DEPOSIT,depositCharge))
                                     println("수정이 완료 되었습니다.")
                                 }
 
@@ -154,7 +161,7 @@ fun main() {
                                     service.addCharge(
                                         LogCharge(
                                             userName,
-                                            Key.CHARGE_REFUND,
+                                            Key.CHARGE_REFUND_CANCEL,
                                             refundCash
                                         )
                                     )

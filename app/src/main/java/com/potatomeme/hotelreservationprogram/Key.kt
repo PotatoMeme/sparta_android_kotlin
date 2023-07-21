@@ -1,7 +1,5 @@
 package com.potatomeme.hotelreservationprogram
 
-import com.potatomeme.hotelreservationprogram.model.Reservation
-
 object Key {
     const val MENU_RESERVATION = 1
     const val MENU_PRINT_RESERVATION_LIST = 2
@@ -15,7 +13,9 @@ object Key {
 
     const val CHARGE_FIRST = 1
     const val CHARGE_DEPOSIT = 2
-    const val CHARGE_REFUND = 3
+    const val CHARGE_REFUND_CANCEL = 3
+    const val CHARGE_REFUND_MODIFY = 4
+
 
     val MENU_KEYS = setOf(
         MENU_RESERVATION,
