@@ -81,7 +81,7 @@ class Service private constructor() {
     fun getUserReservationListWithIndex(userName: String): List<Pair<Int, String>> {
         return reservationList.mapIndexed { index, reservation -> Pair(index, reservation) }
             .filter { reservationPair -> reservationPair.second.userName == userName }
-            .map { reservationPair -> Pair(reservationPair.first, reservationPair.second.toString(Key.RESERVATION_MODIFY)) }
+            .map { reservationPair -> Pair(reservationPair.first, reservationPair.second.toString(Key.MENU_RESERVATION_MODIFY)) }
     }
 
 

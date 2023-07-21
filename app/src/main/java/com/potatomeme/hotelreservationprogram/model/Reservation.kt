@@ -11,11 +11,11 @@ data class Reservation(
     val depositCharge: Int,
 ) {
 
-    fun toString(type: Int): String {
-        return when (type) {
+    fun toString(key: Int): String {
+        return when (key) {
             Key.MENU_PRINT_RESERVATION_LIST, Key.MENU_PRINT_RESERVATION_SORTED_LIST -> "사용자 : $userName, 방번호 : ${roomNumber}호, 체크인 : ${checkInDate.getDate()}, 체크아웃 : ${checkOutDate.getDate()}"
             Key.MENU_RESERVATION_MODIFY -> "방번호 : ${roomNumber}호, 체크인 : ${checkInDate.getDate()}, 체크아웃 : ${checkOutDate.getDate()}"
-            else -> throw IllegalArgumentException("toString type($type) is over the range")
+            else -> throw IllegalArgumentException("toString key($key) is over the range")
         }
 
     }
