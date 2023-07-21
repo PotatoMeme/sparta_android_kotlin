@@ -7,6 +7,16 @@ object Key {
     const val MENU_EXIT = 4
     const val MENU_PRINT_CHARGE_HISTORY = 5
     const val MENU_RESERVATION_MODIFY = 6
+
+    const val RESERVATION_MODIFY = 1
+    const val RESERVATION_CANCEL = 2
+
+    const val CHARGE_FIRST = 1
+    const val CHARGE_DEPOSIT = 2
+    const val CHARGE_REFUND_CANCEL = 3
+    const val CHARGE_REFUND_MODIFY = 4
+
+
     val MENU_KEYS = setOf(
         MENU_RESERVATION,
         MENU_PRINT_RESERVATION_LIST,
