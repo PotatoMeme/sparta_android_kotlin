@@ -4,9 +4,14 @@
     <string name="ui_id_hint">Input your Id.</string>
     <string name="ui_password_text">PassWord</string>
     <string name="ui_password_hint">Input your PassWord.</string>
+    <string name="ui_name_text">Name</string>
+    <string name="ui_name_hint">Input your Name.</string>
+
     <string name="ui_login_text">Login</string>
     <string name="ui_sign_up_text">Sign Up</string>
 
     <string name="ui_login_success_message">Login Success</string>
     <string name="ui_login_fail_message">Check your id or password</string>
+    <string name="ui_sign_up_success_message">Sign Up Success</string>
+    <string name="ui_sign_up_fail_message">Check your data</string>
 </resources>
