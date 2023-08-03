@@ -7,8 +7,12 @@
     <string name="ui_name_text">Name</string>
     <string name="ui_name_hint">Input your Name.</string>
 
+    <string name="ui_age_text">Age : 23</string>
+    <string name="ui_mbti_text">MBTI : INFP</string>
+
     <string name="ui_login_text">Login</string>
     <string name="ui_sign_up_text">Sign Up</string>
+    <string name="ui_exit_text">Exit</string>
 
     <string name="ui_login_success_message">Login Success</string>
     <string name="ui_login_fail_message">Check your id or password</string>
