@@ -6,9 +6,12 @@
     <string name="ui_password_hint">비밀번호를 입력하세요.</string>
     <string name="ui_name_text">이름</string>
     <string name="ui_name_hint">이름을 입력하세요.</string>
+    <string name="ui_age_text">나이 : 23</string>
+    <string name="ui_mbti_text">MBTI : INFP</string>
 
     <string name="ui_login_text">로그인</string>
     <string name="ui_sign_up_text">회원가입</string>
+    <string name="ui_exit_text">종료</string>
 
     <string name="ui_login_success_message">로그인 성공</string>
     <string name="ui_login_fail_message">아이디/비밀번호를 확인해주세요</string>
