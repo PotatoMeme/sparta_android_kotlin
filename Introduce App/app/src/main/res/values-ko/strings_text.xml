@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ui_id_text">아이디</string>
+    <string name="ui_id_hint">아이디를 입력하세요.</string>
+    <string name="ui_password_text">비밀번호</string>
+    <string name="ui_password_hint">비밀번호를 입력하세요.</string>
+    <string name="ui_login_text">로그인</string>
+    <string name="ui_sign_up_text">회원가입</string>
+</resources>
