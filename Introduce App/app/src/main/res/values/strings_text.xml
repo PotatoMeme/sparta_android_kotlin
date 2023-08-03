@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ui_id_text">ID</string>
+    <string name="ui_id_hint">Input your Id.</string>
+    <string name="ui_password_text">PassWord</string>
+    <string name="ui_password_hint">Input your PassWord.</string>
+    <string name="ui_login_text">Login</string>
+    <string name="ui_sign_up_text">Sign Up</string>
+
+    <string name="ui_login_success_message">Login Success</string>
+    <string name="ui_login_fail_message">Check your id or password</string>
+</resources>
