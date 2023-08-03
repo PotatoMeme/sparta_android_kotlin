@@ -1,5 +1,6 @@
 package com.potatomeme.itroduceapp
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -22,6 +23,11 @@ class SignUpActivity : AppCompatActivity() {
 
             val signUpSuccessMessage: String = getString(R.string.ui_sign_up_success_message)
             Toast.makeText(this,signUpSuccessMessage,Toast.LENGTH_SHORT).show()
+
+            val intent = Intent(this,SignInActivity::class.java)
+            intent.putExtra(Key.INTENT_KEY_ID,id)
+            intent.putExtra(Key.INTENT_KEY_PASSWORD,password)
+            setResult(RESULT_OK,intent)
             finish()
         }
     }
