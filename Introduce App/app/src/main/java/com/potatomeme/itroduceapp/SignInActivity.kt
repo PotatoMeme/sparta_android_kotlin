@@ -16,7 +16,7 @@ class SignInActivity : AppCompatActivity() {
         findViewById<Button>(R.id.button_login).setOnClickListener {
             //로그인 로직
             val id: String = findViewById<EditText>(R.id.edit_text_id).text.toString()
-            val password: String = findViewById<EditText>(R.id.edit_password_id).text.toString()
+            val password: String = findViewById<EditText>(R.id.edit_text_password).text.toString()
 
             if (id.isBlank() || password.isBlank()) {
                 val loginFailMessage: String = getString(R.string.ui_login_fail_message)
