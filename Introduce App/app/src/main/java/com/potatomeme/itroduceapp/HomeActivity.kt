@@ -28,5 +28,7 @@ class HomeActivity : AppCompatActivity() {
 
             4 -> findViewById<ImageView>(R.id.image_view_logo).setImageResource(R.drawable.sample2_logo_img)
         }
+
+        findViewById<Button>(R.id.button_exit).setOnClickListener { finish() }
     }
 }
