@@ -2,6 +2,7 @@ package com.potatomeme.itroduceapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -28,7 +29,6 @@ class HomeActivity : AppCompatActivity() {
 
             4 -> findViewById<ImageView>(R.id.image_view_logo).setImageResource(R.drawable.sample2_logo_img)
         }
-
-        findViewById<Button>(R.id.button_exit).setOnClickListener { finish() }
+        findViewById<View>(R.id.button_sample).setOnClickListener { finish() }
     }
 }
