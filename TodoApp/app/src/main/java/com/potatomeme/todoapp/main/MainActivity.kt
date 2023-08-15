@@ -1,12 +1,20 @@
 package com.potatomeme.todoapp.main
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
+import com.potatomeme.todoapp.AddActivity
+import com.potatomeme.todoapp.Key
 import com.potatomeme.todoapp.adapter.ViewPagerAdapter
 import com.potatomeme.todoapp.databinding.ActivityMainBinding
+import com.potatomeme.todoapp.model.Todo
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,7 +24,23 @@ class MainActivity : AppCompatActivity() {
         ViewPagerAdapter(this)
     }
 
-    private val tabTitleArray: Array<String> = arrayOf<String>("Todo", "Bookmark")
+    private val activityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { actvityResult: ActivityResult ->
+        if (actvityResult.resultCode == RESULT_OK) {
+            val title: String = actvityResult.data?.getStringExtra(Key.Intent_KEY_TITLE) ?: ""
+            val description: String =
+                actvityResult.data?.getStringExtra(Key.Intent_KEY_DESCRIPTION) ?: ""
+            Log.d(TAG, "title $title , description $description")
+            val todo: Todo = Todo(
+                id = 0,
+                title = title,
+                description = description
+            )
+            viewPagerAdapter.submitTodo(todo)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -26,6 +50,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initView() = with(binding) {
+        mainToolbar.title = "Camp"
         mainViewpager.adapter = viewPagerAdapter
 
         // TabLayout x ViewPager2
@@ -49,5 +74,14 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+
+        floatingActionButton.setOnClickListener {
+            val intent: Intent = Intent(this@MainActivity, AddActivity::class.java)
+            activityResultLauncher.launch(intent)
+        }
+    }
+
+    companion object{
+        private const val TAG = "MainActivity"
     }
 }

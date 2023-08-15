@@ -42,21 +42,9 @@ class BookmarkFragment : Fragment() {
 
     }
 
-    private fun initView()  = with(binding) {
+    private fun initView() = with(binding) {
         bookmarkRecyclerview.adapter = listAdapter
         bookmarkRecyclerview.layoutManager = LinearLayoutManager(this@BookmarkFragment.context)
-        // for test
-        val testList = arrayListOf<Todo>()
-        for (i in 0 until 100) {
-            testList.add(
-                Todo(
-                    id = i,
-                    "Todo Title $i"
-                )
-            )
-        }
-
-        listAdapter.addItems(testList)
     }
 
     override fun onDestroyView() {

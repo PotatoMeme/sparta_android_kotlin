@@ -1,5 +1,6 @@
 package com.potatomeme.todoapp.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +11,13 @@ class RecyclerviewAdapter() :
     RecyclerView.Adapter<RecyclerviewAdapter.ViewHolder>() {
 
     private val list = ArrayList<Todo>()
+
+    fun addItem(item: Todo) {
+        list.add(item)
+        Log.d(TAG, "addItem: addeditem ${item} ,total Size : ${list.size} ")
+        notifyDataSetChanged()
+    }
+
     fun addItems(items: List<Todo>) {
         list.addAll(items)
         notifyDataSetChanged()
@@ -33,7 +41,12 @@ class RecyclerviewAdapter() :
     inner class ViewHolder(private val binding: ItemRecyclerviewBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(todo: Todo) = with(binding) {
-            itemTextview.text = todo.title
+            titleTextView.text = todo.title
+            descriptionTextView.text = todo.description
         }
+    }
+    
+    companion object{
+        private const val TAG = "RecyclerviewAdapter"
     }
 }

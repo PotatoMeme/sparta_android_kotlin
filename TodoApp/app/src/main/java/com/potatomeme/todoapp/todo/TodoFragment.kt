@@ -37,23 +37,13 @@ class TodoFragment : Fragment() {
         return binding.root
     }
 
+    fun submitTodo(todo: Todo){
+        listAdapter.addItem(todo)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-
-        // for test
-        val testList = arrayListOf<Todo>()
-        for (i in 0 until 100) {
-            testList.add(
-                Todo(
-                    id = i,
-                    "Todo Title $i"
-                )
-            )
-            Log.d(TAG, "onViewCreated: $i")
-        }
-
-        listAdapter.addItems(testList)
     }
 
     private fun initView() = with(binding) {

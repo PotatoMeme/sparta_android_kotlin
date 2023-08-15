@@ -6,6 +6,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.potatomeme.todoapp.bookmark.BookmarkFragment
 import com.potatomeme.todoapp.R
 import com.potatomeme.todoapp.model.MainTabs
+import com.potatomeme.todoapp.model.Todo
 import com.potatomeme.todoapp.todo.TodoFragment
 
 class ViewPagerAdapter(
@@ -29,6 +30,10 @@ class ViewPagerAdapter(
 
     override fun getItemCount(): Int {
         return fragments.size
+    }
+
+    fun submitTodo(todo: Todo) = with(fragments[0]) {
+        if (fragment is TodoFragment) fragment.submitTodo(todo)
     }
 
     override fun createFragment(position: Int): Fragment {
