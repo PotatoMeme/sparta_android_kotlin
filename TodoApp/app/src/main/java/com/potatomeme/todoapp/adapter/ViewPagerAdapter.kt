@@ -32,9 +32,15 @@ class ViewPagerAdapter(
         return fragments.size
     }
 
-    fun submitTodo(todo: Todo) = with(fragments[0]) {
-        if (fragment is TodoFragment) fragment.submitTodo(todo)
+    fun getFragment(position: Int) : Fragment = fragments[position].fragment
+    fun getTodoFragment() : TodoFragment? {
+        val fragment =  fragments.find { it.fragment is TodoFragment }?.fragment
+        return fragments as? TodoFragment
     }
+
+    /*fun submitTodo(todo: Todo) = with(fragments[0]) {
+        if (fragment is TodoFragment) fragment.submitTodo(todo)
+    }*/
 
     override fun createFragment(position: Int): Fragment {
         return fragments[position].fragment

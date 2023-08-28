@@ -28,16 +28,19 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) { actvityResult: ActivityResult ->
         if (actvityResult.resultCode == RESULT_OK) {
-            val title: String = actvityResult.data?.getStringExtra(Key.Intent_KEY_TITLE) ?: ""
-            val description: String =
-                actvityResult.data?.getStringExtra(Key.Intent_KEY_DESCRIPTION) ?: ""
-            Log.d(TAG, "title $title , description $description")
-            val todo: Todo = Todo(
-                id = 0,
-                title = title,
-                description = description
-            )
-            viewPagerAdapter.submitTodo(todo)
+            val todoFragment = viewPagerAdapter.getTodoFragment()
+            if (todoFragment != null) {
+                val title: String = actvityResult.data?.getStringExtra(Key.Intent_KEY_TITLE) ?: ""
+                val description: String =
+                    actvityResult.data?.getStringExtra(Key.Intent_KEY_DESCRIPTION) ?: ""
+                Log.d(TAG, "title $title , description $description")
+                val todo: Todo = Todo(
+                    id = 0,
+                    title = title,
+                    description = description
+                )
+                todoFragment.submitTodo(todo)
+            }
         }
     }
 
@@ -78,12 +81,11 @@ class MainActivity : AppCompatActivity() {
         })
 
         floatingActionButton.setOnClickListener {
-            val intent: Intent = Intent(this@MainActivity, AddActivity::class.java)
-            activityResultLauncher.launch(intent)
+            activityResultLauncher.launch(AddActivity.newIntent(this@MainActivity))
         }
     }
 
-    companion object{
+    companion object {
         private const val TAG = "MainActivity"
     }
 }
