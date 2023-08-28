@@ -4,17 +4,17 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
-import com.potatomeme.todoapp.AddActivity
+import com.potatomeme.todoapp.todo.AddActivity
 import com.potatomeme.todoapp.Key
 import com.potatomeme.todoapp.adapter.ViewPagerAdapter
 import com.potatomeme.todoapp.databinding.ActivityMainBinding
 import com.potatomeme.todoapp.model.Todo
+import com.potatomeme.todoapp.todo.TodoFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -61,8 +61,10 @@ class MainActivity : AppCompatActivity() {
         mainViewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                when (position) {
-                    0 -> {
+                val currentFragment = viewPagerAdapter.getFragment(position)
+
+                when (currentFragment) {
+                    is TodoFragment -> {
                         floatingActionButton.show()
                         //floatingActionButton.visibility = View.VISIBLE
                     }
