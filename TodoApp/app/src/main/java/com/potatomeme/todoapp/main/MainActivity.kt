@@ -1,6 +1,7 @@
 package com.potatomeme.todoapp.main
 
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -28,19 +29,21 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) { actvityResult: ActivityResult ->
         if (actvityResult.resultCode == RESULT_OK) {
-            val todoFragment: TodoFragment? = viewPagerAdapter.getTodoFragment()
-            if (todoFragment != null) {
-                val title: String = actvityResult.data?.getStringExtra(Key.Intent_KEY_TITLE) ?: ""
-                val description: String =
-                    actvityResult.data?.getStringExtra(Key.Intent_KEY_DESCRIPTION) ?: ""
-                Log.d(TAG, "title $title , description $description")
-                val todo: Todo = Todo(
-                    id = 0,
-                    title = title,
-                    description = description
-                )
-                todoFragment.submitTodo(todo)
+            /*val title: String = actvityResult.data?.getStringExtra(Key.Intent_KEY_TITLE) ?: ""
+            val description: String =
+                actvityResult.data?.getStringExtra(Key.Intent_KEY_DESCRIPTION) ?: ""
+            Log.d(TAG, "title $title , description $description")
+            val todo: Todo = Todo(
+                title = title,
+                description = description
+            )*/
+            val todo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                actvityResult.data?.getParcelableExtra(Key.Intent_KEY_TODO_MODEL, Todo::class.java)
+            } else {
+                actvityResult.data?.getParcelableExtra(Key.Intent_KEY_TODO_MODEL)
             }
+            val todoFragment: TodoFragment? = viewPagerAdapter.getTodoFragment()
+            if (todo != null) todoFragment?.submitTodo(todo)
         }
     }
 
