@@ -13,7 +13,7 @@
         android:theme="@style/Theme.TodoApp"
         tools:targetApi="31">
         <activity
-            android:name=".AddActivity"
+            android:name=".todo.AddActivity"
             android:exported="false"
             android:parentActivityName=".main.MainActivity"/>
         <activity
