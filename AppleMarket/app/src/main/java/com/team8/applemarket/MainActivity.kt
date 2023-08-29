@@ -1,8 +1,10 @@
 package com.team8.applemarket
 
+import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.team8.applemarket.adapter.ItemRecyclerViewAdapter
@@ -35,8 +37,28 @@ class MainActivity : AppCompatActivity() {
         itemRecyclerView.apply {
             adapter = recyclerViewAdapter
             layoutManager = LinearLayoutManager(this@MainActivity)
-            addItemDecoration(DividerItemDecoration(this@MainActivity,
-                (layoutManager as LinearLayoutManager).orientation))
+            addItemDecoration(
+                DividerItemDecoration(
+                    this@MainActivity,
+                    (layoutManager as LinearLayoutManager).orientation
+                )
+            )
         }
+
+        notificationImgaeView.setOnClickListener {
+            //todo 알림 기능
+        }
+    }
+
+    override fun onBackPressed() {
+        //todo Dialog로 종료 확인
+        val builder = AlertDialog.Builder(this).apply {
+            setTitle("종료")
+            setIcon(R.drawable.conversation)
+            setMessage("정말 종료하시겠습니까?")
+            setPositiveButton("확인") { _, _ -> finish() }
+            setNegativeButton("취소") { _, _ -> }
+        }
+        builder.show()
     }
 }
