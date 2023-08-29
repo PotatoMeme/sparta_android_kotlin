@@ -1,0 +1,54 @@
+package com.team8.applemarket.adapter
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.team8.applemarket.R
+import com.team8.applemarket.SampleData
+import com.team8.applemarket.databinding.ItemRecyclerViewBinding
+import com.team8.applemarket.model.Item
+import com.team8.applemarket.model.User
+import com.team8.applemarket.util.Util.numFormatter
+
+class ItemRecyclerViewAdapter(
+    defaultItemArray: Array<Item>,
+    val onClickItemListener: (item: Item, user: User) -> (Unit),
+) : RecyclerView.Adapter<ItemRecyclerViewAdapter.ViewHolder>() {
+    val itemList: ArrayList<Item> = arrayListOf<Item>().apply {
+        addAll(defaultItemArray)
+    }
+
+    inner class ViewHolder(private val binding: ItemRecyclerViewBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(pos: Int) = with(binding) {
+            val currentItem = itemList[pos]
+
+            itemImageView.setImageResource(currentItem.imgRes)
+            if (currentItem.favoriteFlag) itemFavoriteImageView.setImageResource(R.drawable.fill_heart)
+
+            itemNameTextView.text = currentItem.name
+            itemPriceTextView.text = currentItem.price.numFormatter()
+            itemTalkCountTextView.text = currentItem.talkCount.numFormatter()
+            itemFavoriteCountTextView.text = currentItem.favoriteCount.numFormatter()
+
+            val currentUser: User? = SampleData.userArr.find { it.id == currentItem.userId }
+            userAddressTextView.text = currentUser?.address
+
+            root.setOnClickListener { onClickItemListener(currentItem, currentUser!!) }
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding =
+            ItemRecyclerViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
+    }
+
+    override fun getItemCount(): Int {
+        return itemList.size
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(position)
+    }
+}
