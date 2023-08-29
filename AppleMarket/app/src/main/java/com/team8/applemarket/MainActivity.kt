@@ -3,6 +3,7 @@ package com.team8.applemarket
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.team8.applemarket.adapter.ItemRecyclerViewAdapter
 import com.team8.applemarket.databinding.ActivityMainBinding
@@ -34,6 +35,8 @@ class MainActivity : AppCompatActivity() {
         itemRecyclerView.apply {
             adapter = recyclerViewAdapter
             layoutManager = LinearLayoutManager(this@MainActivity)
+            addItemDecoration(DividerItemDecoration(this@MainActivity,
+                (layoutManager as LinearLayoutManager).orientation))
         }
     }
 }
