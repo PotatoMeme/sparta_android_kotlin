@@ -15,7 +15,7 @@ class RecyclerviewAdapter() :
     fun addItem(item: Todo) {
         list.add(item)
         Log.d(TAG, "addItem: addeditem ${item} ,total Size : ${list.size} ")
-        notifyDataSetChanged()
+        notifyItemChanged(list.size - 1)
     }
 
     fun addItems(items: List<Todo>) {

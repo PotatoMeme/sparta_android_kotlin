@@ -28,13 +28,18 @@ class ViewPagerAdapter(
         return fragments[position].titleRes
     }
 
+    fun getFragment(position: Int) : Fragment = fragments[position].fragment
+
+    fun getTodoFragment(): TodoFragment? =
+        (fragments.find { it.fragment is TodoFragment })?.fragment as? TodoFragment
+
     override fun getItemCount(): Int {
         return fragments.size
     }
 
-    fun submitTodo(todo: Todo) = with(fragments[0]) {
+    /*fun submitTodo(todo: Todo) = with(fragments[0]) {
         if (fragment is TodoFragment) fragment.submitTodo(todo)
-    }
+    }*/
 
     override fun createFragment(position: Int): Fragment {
         return fragments[position].fragment

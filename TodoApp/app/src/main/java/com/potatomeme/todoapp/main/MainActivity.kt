@@ -1,20 +1,21 @@
 package com.potatomeme.todoapp.main
 
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
-import com.potatomeme.todoapp.AddActivity
+import com.potatomeme.todoapp.todo.AddActivity
 import com.potatomeme.todoapp.Key
 import com.potatomeme.todoapp.adapter.ViewPagerAdapter
 import com.potatomeme.todoapp.databinding.ActivityMainBinding
 import com.potatomeme.todoapp.model.Todo
+import com.potatomeme.todoapp.todo.TodoFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,16 +29,21 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) { actvityResult: ActivityResult ->
         if (actvityResult.resultCode == RESULT_OK) {
-            val title: String = actvityResult.data?.getStringExtra(Key.Intent_KEY_TITLE) ?: ""
+            /*val title: String = actvityResult.data?.getStringExtra(Key.Intent_KEY_TITLE) ?: ""
             val description: String =
                 actvityResult.data?.getStringExtra(Key.Intent_KEY_DESCRIPTION) ?: ""
             Log.d(TAG, "title $title , description $description")
             val todo: Todo = Todo(
-                id = 0,
                 title = title,
                 description = description
-            )
-            viewPagerAdapter.submitTodo(todo)
+            )*/
+            val todo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                actvityResult.data?.getParcelableExtra(Key.Intent_KEY_TODO_MODEL, Todo::class.java)
+            } else {
+                actvityResult.data?.getParcelableExtra(Key.Intent_KEY_TODO_MODEL)
+            }
+            val todoFragment: TodoFragment? = viewPagerAdapter.getTodoFragment()
+            if (todo != null) todoFragment?.submitTodo(todo)
         }
     }
 
@@ -61,8 +67,10 @@ class MainActivity : AppCompatActivity() {
         mainViewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                when (position) {
-                    0 -> {
+                val currentFragment = viewPagerAdapter.getFragment(position)
+
+                when (currentFragment) {
+                    is TodoFragment -> {
                         floatingActionButton.show()
                         //floatingActionButton.visibility = View.VISIBLE
                     }
@@ -76,12 +84,11 @@ class MainActivity : AppCompatActivity() {
         })
 
         floatingActionButton.setOnClickListener {
-            val intent: Intent = Intent(this@MainActivity, AddActivity::class.java)
-            activityResultLauncher.launch(intent)
+            activityResultLauncher.launch(AddActivity.newIntent(this@MainActivity))
         }
     }
 
-    companion object{
+    companion object {
         private const val TAG = "MainActivity"
     }
 }
