@@ -41,11 +41,32 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private val recyclerViewAdapter: ItemRecyclerViewAdapter by lazy {
-        ItemRecyclerViewAdapter(SampleData.itemArr) { item: Item, user: User ->
-            //todo activity 이동관련 로직 구현!!
-            Log.d(TAG, "RecyclerViewItem($item) Clicked")
-            activityResultLauncher.launch(DetailActivity.newIntent(this, item, user))
-        }
+        ItemRecyclerViewAdapter(SampleData.itemArr,
+            object : ItemRecyclerViewAdapter.ClickEventLister {
+                override fun onClickItemListener(item: Item, user: User) {
+                    //todo activity 이동관련 로직 구현!!
+                    Log.d(TAG, "RecyclerViewItem($item) Clicked")
+                    activityResultLauncher.launch(
+                        DetailActivity.newIntent(
+                            this@MainActivity,
+                            item,
+                            user
+                        )
+                    )
+                }
+
+                override fun onLongClickItemListener(function: () -> Unit) {
+                    //todo 삭제 이벤트
+                    val builder = AlertDialog.Builder(this@MainActivity).apply {
+                        setTitle("상품 삭제")
+                        setIcon(R.drawable.conversation)
+                        setMessage("정말 삭제하시겠습니까?")
+                        setPositiveButton("확인") { _, _ -> function() }
+                        setNegativeButton("취소") { _, _ -> }
+                    }
+                    builder.show()
+                }
+            })
     }
 
 

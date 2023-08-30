@@ -1,5 +1,6 @@
 package com.team8.applemarket.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,11 +10,18 @@ import com.team8.applemarket.databinding.ItemRecyclerViewBinding
 import com.team8.applemarket.model.Item
 import com.team8.applemarket.model.User
 import com.team8.applemarket.util.Util.numFormatter
+import kotlin.math.log
 
 class ItemRecyclerViewAdapter(
     defaultItemArray: Array<Item>,
-    val onClickItemListener: (item: Item, user: User) -> (Unit),
+    val clickEventLister: ClickEventLister,
 ) : RecyclerView.Adapter<ItemRecyclerViewAdapter.ViewHolder>() {
+
+    interface ClickEventLister {
+        fun onClickItemListener(item: Item, user: User)
+        fun onLongClickItemListener(function: () -> (Unit))
+    }
+
     val itemList: ArrayList<Item> = arrayListOf<Item>().apply {
         addAll(defaultItemArray)
     }
@@ -34,7 +42,20 @@ class ItemRecyclerViewAdapter(
             val currentUser: User? = SampleData.userArr.find { it.id == currentItem.userId }
             userAddressTextView.text = currentUser?.address
 
-            root.setOnClickListener { onClickItemListener(currentItem, currentUser!!) }
+            root.setOnClickListener {
+                clickEventLister.onClickItemListener(
+                    currentItem,
+                    currentUser!!
+                )
+            }
+            root.setOnLongClickListener {
+                clickEventLister.onLongClickItemListener {
+                    val itemIndex: Int = itemList.indexOfFirst { it.id == currentItem.id }
+                    itemList.removeAt(itemIndex)
+                    notifyItemRangeRemoved(itemIndex, 1)
+                }
+                false
+            }
         }
     }
 
