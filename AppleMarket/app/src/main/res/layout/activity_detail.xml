@@ -184,6 +184,7 @@
             app:layout_goneMarginStart="20dp" />
 
         <TextView
+            android:id="@+id/item_price_text_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
