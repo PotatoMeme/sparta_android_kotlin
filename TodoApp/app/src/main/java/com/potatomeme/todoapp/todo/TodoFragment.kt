@@ -55,6 +55,10 @@ class TodoFragment : Fragment() {
         listAdapter.updateItem(todo)
     }
 
+    fun deleteTodo(id:Int){
+        listAdapter.deleteTodo(id)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()

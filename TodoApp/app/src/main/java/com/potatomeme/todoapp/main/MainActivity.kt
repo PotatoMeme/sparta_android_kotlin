@@ -28,12 +28,15 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) { actvityResult: ActivityResult ->
         if (actvityResult.resultCode == RESULT_OK) {
-
-            val contentType : TodoContentType? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                actvityResult.data?.getSerializableExtra(ContentActivity.CONTENT_TYPE,TodoContentType::class.java)
-            } else {
-                actvityResult.data?.getSerializableExtra(ContentActivity.CONTENT_TYPE) as TodoContentType
-            }
+            val contentType: TodoContentType? =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    actvityResult.data?.getSerializableExtra(
+                        ContentActivity.CONTENT_TYPE,
+                        TodoContentType::class.java
+                    )
+                } else {
+                    actvityResult.data?.getSerializableExtra(ContentActivity.CONTENT_TYPE) as TodoContentType
+                }
 
             val todo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 actvityResult.data?.getParcelableExtra(
@@ -45,13 +48,15 @@ class MainActivity : AppCompatActivity() {
             }
             val todoFragment: TodoFragment? = viewPagerAdapter.getTodoFragment()
 
-            when(contentType){
-                TodoContentType.ADD ->  if (todo != null) todoFragment?.submitTodo(todo)
+            when (contentType) {
+                TodoContentType.ADD -> if (todo != null) todoFragment?.submitTodo(todo)
                 TodoContentType.EDIT -> if (todo != null) todoFragment?.updateTodo(todo)
                 null -> {}
             }
-
-
+        } else if (actvityResult.resultCode == ContentActivity.RESULT_DELETE) {
+            val todoId = actvityResult.data?.getIntExtra(ContentActivity.INTENT_KEY_TODO_ID, 0)
+            val todoFragment: TodoFragment? = viewPagerAdapter.getTodoFragment()
+            if (todoId != null) todoFragment?.deleteTodo(todoId)
         }
     }
 

@@ -28,6 +28,12 @@ class RecyclerviewAdapter(val listener: EventListener) :
         notifyItemChanged(currentItemIdx)
     }
 
+    fun deleteTodo(id:Int) {
+        val currentItemIdx = list.indexOfFirst { it.id == id }
+        list.removeAt(currentItemIdx)
+        notifyItemRemoved(currentItemIdx)
+    }
+
     fun addItems(items: List<Todo>) {
         list.addAll(items)
         notifyDataSetChanged()
@@ -47,6 +53,7 @@ class RecyclerviewAdapter(val listener: EventListener) :
         val item = list[position]
         holder.bind(item)
     }
+
 
 
 

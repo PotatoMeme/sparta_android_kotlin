@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import com.potatomeme.todoapp.databinding.ActivityContentBinding
 import com.potatomeme.todoapp.model.Todo
@@ -21,6 +22,9 @@ class ContentActivity : AppCompatActivity() {
         private const val TAG = "ContentActivity"
         const val CONTENT_TYPE = "contentType"
         const val INTENT_KEY_TODO_MODEL: String = "TodoModel"
+        const val INTENT_KEY_TODO_ID: String = "TodoID"
+
+        const val RESULT_DELETE : Int = 1001
 
         fun newIntentForAdd(
             context: Context,
@@ -70,6 +74,12 @@ class ContentActivity : AppCompatActivity() {
             titleEditText.setText(todo!!.title)
             descriptionEditText.setText(todo!!.description)
             submitButton.text = "수정"
+            deleteButton.visibility = View.VISIBLE
+            deleteButton.setOnClickListener {
+                intent.putExtra(INTENT_KEY_TODO_ID, todo?.id)
+                setResult(RESULT_DELETE, intent)
+                finish()
+            }
         }
 
         submitButton.setOnClickListener {
