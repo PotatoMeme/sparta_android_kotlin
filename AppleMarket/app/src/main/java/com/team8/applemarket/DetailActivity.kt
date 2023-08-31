@@ -16,8 +16,9 @@ class DetailActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "DetailActivity"
 
-        private const val INTENT_ITEM = "intentItem"
+        const val INTENT_ITEM = "intentItem"
         private const val INTENT_USER = "intentUser"
+        const val IS_FAVORITE_CHANGED = "isFavoritChanged"
 
         fun newIntent(context: Context, item: Item, user: User): Intent =
             Intent(context, DetailActivity::class.java).apply {
@@ -80,6 +81,9 @@ class DetailActivity : AppCompatActivity() {
 
             itemFavoriteImageView.setOnClickListener {
                 //todo 좋아요 로직 구현
+                itemFavoriteImageView.isSelected = !itemFavoriteImageView.isSelected
+                intent.putExtra(IS_FAVORITE_CHANGED,itemFavoriteImageView.isSelected != item.favoriteFlag)
+                setResult(RESULT_OK,intent)
             }
         }
     }

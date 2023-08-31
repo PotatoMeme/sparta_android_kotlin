@@ -38,6 +38,19 @@ class MainActivity : AppCompatActivity() {
     ) { activityResult: ActivityResult ->
         if (activityResult.resultCode == RESULT_OK) {
 
+            val item = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                activityResult.data?.getParcelableExtra(
+                    DetailActivity.INTENT_ITEM,
+                    Item::class.java
+                )
+            } else {
+                activityResult.data?.getParcelableExtra(DetailActivity.INTENT_ITEM)
+            }
+            val favoriteChanged: Boolean =
+                activityResult.data?.getBooleanExtra(DetailActivity.IS_FAVORITE_CHANGED, false)
+                    ?: false
+
+            if (favoriteChanged) recyclerViewAdapter.itemFavoriteChanged(item!!.id)
         }
     }
     private val recyclerViewAdapter: ItemRecyclerViewAdapter by lazy {
@@ -131,6 +144,9 @@ class MainActivity : AppCompatActivity() {
 
             manager.notify(NOTIFICATION_ID, builder.build())
         }
+
+        // todo 리사이클러뷰 올리기
+        // https://notepad96.tistory.com/190
     }
 
     override fun onBackPressed() {

@@ -26,6 +26,18 @@ class ItemRecyclerViewAdapter(
         addAll(defaultItemArray)
     }
 
+    fun itemFavoriteChanged(id: Int) {
+        val itemIndex = itemList.indexOfFirst { it.id == id }
+        val currentItem: Item = itemList[itemIndex]
+        val changedItem = if (currentItem.favoriteFlag) {
+            currentItem.copy(favoriteFlag = false, favoriteCount = currentItem.favoriteCount - 1)
+        } else {
+            currentItem.copy(favoriteFlag = true, favoriteCount = currentItem.favoriteCount + 1)
+        }
+        itemList[itemIndex] = changedItem
+        notifyItemChanged(itemIndex)
+    }
+
     inner class ViewHolder(private val binding: ItemRecyclerViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(pos: Int) = with(binding) {
@@ -35,9 +47,9 @@ class ItemRecyclerViewAdapter(
             if (currentItem.favoriteFlag) itemFavoriteImageView.setImageResource(R.drawable.fill_heart)
 
             itemNameTextView.text = currentItem.name
-            itemPriceTextView.text = currentItem.price.numFormatter()
+            itemPriceTextView.text = "${currentItem.price.numFormatter()}원"
             itemTalkCountTextView.text = currentItem.talkCount.numFormatter()
-            itemFavoriteCountTextView.text = currentItem.favoriteCount.numFormatter()
+            itemFavoriteCountTextView.text = (currentItem.favoriteCount).numFormatter()
 
             val currentUser: User? = SampleData.userArr.find { it.id == currentItem.userId }
             userAddressTextView.text = currentUser?.address
