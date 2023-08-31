@@ -4,17 +4,16 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
-import com.potatomeme.todoapp.todo.AddActivity
-import com.potatomeme.todoapp.Key
+import com.potatomeme.todoapp.todo.ContentActivity
 import com.potatomeme.todoapp.adapter.ViewPagerAdapter
 import com.potatomeme.todoapp.databinding.ActivityMainBinding
 import com.potatomeme.todoapp.model.Todo
+import com.potatomeme.todoapp.todo.TodoContentType
 import com.potatomeme.todoapp.todo.TodoFragment
 
 class MainActivity : AppCompatActivity() {
@@ -29,22 +28,35 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) { actvityResult: ActivityResult ->
         if (actvityResult.resultCode == RESULT_OK) {
-            /*val title: String = actvityResult.data?.getStringExtra(Key.Intent_KEY_TITLE) ?: ""
-            val description: String =
-                actvityResult.data?.getStringExtra(Key.Intent_KEY_DESCRIPTION) ?: ""
-            Log.d(TAG, "title $title , description $description")
-            val todo: Todo = Todo(
-                title = title,
-                description = description
-            )*/
-            val todo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                actvityResult.data?.getParcelableExtra(Key.Intent_KEY_TODO_MODEL, Todo::class.java)
+
+            val contentType : TodoContentType? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                actvityResult.data?.getSerializableExtra(ContentActivity.CONTENT_TYPE,TodoContentType::class.java)
             } else {
-                actvityResult.data?.getParcelableExtra(Key.Intent_KEY_TODO_MODEL)
+                actvityResult.data?.getSerializableExtra(ContentActivity.CONTENT_TYPE) as TodoContentType
+            }
+
+            val todo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                actvityResult.data?.getParcelableExtra(
+                    ContentActivity.INTENT_KEY_TODO_MODEL,
+                    Todo::class.java
+                )
+            } else {
+                actvityResult.data?.getParcelableExtra(ContentActivity.INTENT_KEY_TODO_MODEL)
             }
             val todoFragment: TodoFragment? = viewPagerAdapter.getTodoFragment()
-            if (todo != null) todoFragment?.submitTodo(todo)
+
+            when(contentType){
+                TodoContentType.ADD ->  if (todo != null) todoFragment?.submitTodo(todo)
+                TodoContentType.EDIT -> if (todo != null) todoFragment?.updateTodo(todo)
+                null -> {}
+            }
+
+
         }
+    }
+
+    fun useActivityResultLauncher(intent: Intent) {
+        activityResultLauncher.launch(intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         floatingActionButton.setOnClickListener {
-            activityResultLauncher.launch(AddActivity.newIntent(this@MainActivity))
+            activityResultLauncher.launch(ContentActivity.newIntentForAdd(this@MainActivity))
         }
     }
 

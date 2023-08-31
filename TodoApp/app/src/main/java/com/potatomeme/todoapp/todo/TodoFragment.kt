@@ -1,16 +1,14 @@
 package com.potatomeme.todoapp.todo
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.potatomeme.todoapp.R
 import com.potatomeme.todoapp.adapter.RecyclerviewAdapter
 import com.potatomeme.todoapp.databinding.FragmentTodoBinding
+import com.potatomeme.todoapp.main.MainActivity
 import com.potatomeme.todoapp.model.Todo
 
 
@@ -25,7 +23,19 @@ class TodoFragment : Fragment() {
         get() = _binding!!
 
     private val listAdapter by lazy {
-        RecyclerviewAdapter()
+        RecyclerviewAdapter(object : RecyclerviewAdapter.EventListener {
+            override fun onClickEventListenr(todo: Todo) {
+                if (activity is MainActivity) {
+                    (activity as MainActivity)
+                        .useActivityResultLauncher(
+                            ContentActivity.newIntentForEdit(
+                                context!!,
+                                todo
+                            )
+                        )
+                }
+            }
+        })
     }
 
     override fun onCreateView(
@@ -33,12 +43,16 @@ class TodoFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        _binding = FragmentTodoBinding.inflate(inflater,container,false)
+        _binding = FragmentTodoBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    fun submitTodo(todo: Todo){
+    fun submitTodo(todo: Todo) {
         listAdapter.addItem(todo)
+    }
+
+    fun updateTodo(todo: Todo) {
+        listAdapter.updateItem(todo)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
