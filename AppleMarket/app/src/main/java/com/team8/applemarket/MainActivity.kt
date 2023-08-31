@@ -19,6 +19,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.team8.applemarket.adapter.ItemRecyclerViewAdapter
 import com.team8.applemarket.databinding.ActivityMainBinding
 import com.team8.applemarket.model.Item
@@ -92,6 +93,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViews() = with(binding) {
+        var isTop = true
+
         itemRecyclerView.apply {
             adapter = recyclerViewAdapter
             layoutManager = LinearLayoutManager(this@MainActivity)
@@ -101,6 +104,26 @@ class MainActivity : AppCompatActivity() {
                     (layoutManager as LinearLayoutManager).orientation
                 )
             )
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (!canScrollVertically(-1) //canScrollVertically(-1) : 최상단일 경우 false 값 return
+                        && newState == RecyclerView.SCROLL_STATE_IDLE //현재 스크롤되지 않는 상태
+                    ) {
+                        upArrowFloatingActionButton.hide()
+                        isTop = true
+                    } else if (isTop) {
+                        upArrowFloatingActionButton.show()
+                        isTop = false
+                    }
+                }
+            })
+        }
+
+        // todo 리사이클러뷰 올리기
+        // https://notepad96.tistory.com/190
+        upArrowFloatingActionButton.setOnClickListener {
+            itemRecyclerView.smoothScrollToPosition(0)
         }
 
         notificationImgaeView.setOnClickListener {
@@ -144,9 +167,6 @@ class MainActivity : AppCompatActivity() {
 
             manager.notify(NOTIFICATION_ID, builder.build())
         }
-
-        // todo 리사이클러뷰 올리기
-        // https://notepad96.tistory.com/190
     }
 
     override fun onBackPressed() {
