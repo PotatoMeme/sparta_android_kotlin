@@ -23,7 +23,11 @@ class BookmarkFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val listAdapter by lazy {
-        RecyclerviewAdapter()
+        RecyclerviewAdapter(object : RecyclerviewAdapter.EventListener{
+            override fun onClickEventListenr(todo: Todo) {
+
+            }
+        })
     }
 
     override fun onCreateView(

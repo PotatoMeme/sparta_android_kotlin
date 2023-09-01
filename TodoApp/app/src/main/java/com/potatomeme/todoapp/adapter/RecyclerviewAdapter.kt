@@ -7,8 +7,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.potatomeme.todoapp.databinding.ItemRecyclerviewBinding
 import com.potatomeme.todoapp.model.Todo
 
-class RecyclerviewAdapter() :
+class RecyclerviewAdapter(val listener: EventListener) :
     RecyclerView.Adapter<RecyclerviewAdapter.ViewHolder>() {
+
+    interface EventListener {
+        fun onClickEventListenr(todo: Todo)
+    }
 
     private val list = ArrayList<Todo>()
 
@@ -16,6 +20,18 @@ class RecyclerviewAdapter() :
         list.add(item)
         Log.d(TAG, "addItem: addeditem ${item} ,total Size : ${list.size} ")
         notifyItemChanged(list.size - 1)
+    }
+
+    fun updateItem(todo: Todo) {
+        val currentItemIdx = list.indexOfFirst { it.id == todo.id }
+        list[currentItemIdx] = todo
+        notifyItemChanged(currentItemIdx)
+    }
+
+    fun deleteTodo(id:Int) {
+        val currentItemIdx = list.indexOfFirst { it.id == id }
+        list.removeAt(currentItemIdx)
+        notifyItemRemoved(currentItemIdx)
     }
 
     fun addItems(items: List<Todo>) {
@@ -38,15 +54,19 @@ class RecyclerviewAdapter() :
         holder.bind(item)
     }
 
+
+
+
     inner class ViewHolder(private val binding: ItemRecyclerviewBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(todo: Todo) = with(binding) {
+            root.setOnClickListener { listener.onClickEventListenr(todo) }
             titleTextView.text = todo.title
             descriptionTextView.text = todo.description
         }
     }
-    
-    companion object{
+
+    companion object {
         private const val TAG = "RecyclerviewAdapter"
     }
 }
