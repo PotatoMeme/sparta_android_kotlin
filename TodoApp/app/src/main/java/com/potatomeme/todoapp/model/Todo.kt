@@ -5,7 +5,11 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Todo(
-    //val id: Int,
     val title: String,
     val description: String,
-) : Parcelable
+    val id: Int = idIncrease++,
+) : Parcelable{
+    companion object{
+        private var idIncrease = 0
+    }
+}
