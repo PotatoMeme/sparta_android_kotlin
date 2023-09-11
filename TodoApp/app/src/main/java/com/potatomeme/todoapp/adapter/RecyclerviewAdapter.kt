@@ -41,7 +41,7 @@ class RecyclerviewAdapter(val listener: EventListener) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            ItemRecyclerviewBinding.inflate(LayoutInflater.from(parent.context))
+            ItemRecyclerviewBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         )
     }
 
@@ -53,9 +53,6 @@ class RecyclerviewAdapter(val listener: EventListener) :
         val item = list[position]
         holder.bind(item)
     }
-
-
-
 
     inner class ViewHolder(private val binding: ItemRecyclerviewBinding) :
         RecyclerView.ViewHolder(binding.root) {
