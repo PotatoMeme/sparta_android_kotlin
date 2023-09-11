@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.potatomeme.todoapp.databinding.ActivityContentBinding
 import com.potatomeme.todoapp.model.Todo
 
@@ -20,7 +21,7 @@ class ContentActivity : AppCompatActivity() {
     companion object {
         //fun newIntent(context: Context) = Intent(context, ContentActivity::class.java)
         private const val TAG = "ContentActivity"
-        const val CONTENT_TYPE = "contentType"
+        const val CONTENT_TYPE = "ContentType"
         const val INTENT_KEY_TODO_MODEL: String = "TodoModel"
         const val INTENT_KEY_TODO_ID: String = "TodoID"
 
@@ -76,9 +77,16 @@ class ContentActivity : AppCompatActivity() {
             submitButton.text = "수정"
             deleteButton.visibility = View.VISIBLE
             deleteButton.setOnClickListener {
-                intent.putExtra(INTENT_KEY_TODO_ID, todo?.id)
-                setResult(RESULT_DELETE, intent)
-                finish()
+                val dialogBuilder = AlertDialog.Builder(this@ContentActivity).apply {
+                    setMessage("정말 삭제하시 겠습니까?")
+                    setNegativeButton("취소"){ _,_ -> }
+                    setPositiveButton("확인"){ _,_ ->
+                        intent.putExtra(INTENT_KEY_TODO_ID, todo?.id)
+                        setResult(RESULT_DELETE, intent)
+                        finish()
+                    }
+                }
+                dialogBuilder.show()
             }
         }
 
