@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
+import com.potatomeme.todoapp.R
 import com.potatomeme.todoapp.todo.ContentActivity
 import com.potatomeme.todoapp.adapter.ViewPagerAdapter
 import com.potatomeme.todoapp.databinding.ActivityMainBinding
@@ -27,36 +28,39 @@ class MainActivity : AppCompatActivity() {
     private val activityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { actvityResult: ActivityResult ->
-        if (actvityResult.resultCode == RESULT_OK) {
-            val contentType: TodoContentType? =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    actvityResult.data?.getSerializableExtra(
-                        ContentActivity.CONTENT_TYPE,
-                        TodoContentType::class.java
+        when (actvityResult.resultCode) {
+            RESULT_OK -> {
+                val contentType: TodoContentType? =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        actvityResult.data?.getSerializableExtra(
+                            ContentActivity.CONTENT_TYPE,
+                            TodoContentType::class.java
+                        )
+                    } else {
+                        actvityResult.data?.getSerializableExtra(ContentActivity.CONTENT_TYPE) as TodoContentType
+                    }
+
+                val todo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    actvityResult.data?.getParcelableExtra(
+                        ContentActivity.INTENT_KEY_TODO_MODEL,
+                        Todo::class.java
                     )
                 } else {
-                    actvityResult.data?.getSerializableExtra(ContentActivity.CONTENT_TYPE) as TodoContentType
+                    actvityResult.data?.getParcelableExtra(ContentActivity.INTENT_KEY_TODO_MODEL)
                 }
+                val todoFragment: TodoFragment? = viewPagerAdapter.getTodoFragment()
 
-            val todo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                actvityResult.data?.getParcelableExtra(
-                    ContentActivity.INTENT_KEY_TODO_MODEL,
-                    Todo::class.java
-                )
-            } else {
-                actvityResult.data?.getParcelableExtra(ContentActivity.INTENT_KEY_TODO_MODEL)
+                when (contentType) {
+                    TodoContentType.ADD -> if (todo != null) todoFragment?.submitTodo(todo)
+                    TodoContentType.EDIT -> if (todo != null) todoFragment?.updateTodo(todo)
+                    null -> {}
+                }
             }
-            val todoFragment: TodoFragment? = viewPagerAdapter.getTodoFragment()
-
-            when (contentType) {
-                TodoContentType.ADD -> if (todo != null) todoFragment?.submitTodo(todo)
-                TodoContentType.EDIT -> if (todo != null) todoFragment?.updateTodo(todo)
-                null -> {}
+            ContentActivity.RESULT_DELETE -> {
+                val todoId = actvityResult.data?.getIntExtra(ContentActivity.INTENT_KEY_TODO_ID, 0)
+                val todoFragment: TodoFragment? = viewPagerAdapter.getTodoFragment()
+                if (todoId != null) todoFragment?.deleteTodo(todoId)
             }
-        } else if (actvityResult.resultCode == ContentActivity.RESULT_DELETE) {
-            val todoId = actvityResult.data?.getIntExtra(ContentActivity.INTENT_KEY_TODO_ID, 0)
-            val todoFragment: TodoFragment? = viewPagerAdapter.getTodoFragment()
-            if (todoId != null) todoFragment?.deleteTodo(todoId)
         }
     }
 
@@ -73,7 +77,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initView() = with(binding) {
-        mainToolbar.title = "Camp"
+        mainToolbar.title = getString(R.string.camp)
         mainViewpager.adapter = viewPagerAdapter
 
         // TabLayout x ViewPager2
@@ -84,9 +88,8 @@ class MainActivity : AppCompatActivity() {
         mainViewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                val currentFragment = viewPagerAdapter.getFragment(position)
 
-                when (currentFragment) {
+                when (viewPagerAdapter.getFragment(position)) {
                     is TodoFragment -> {
                         floatingActionButton.show()
                         //floatingActionButton.visibility = View.VISIBLE
