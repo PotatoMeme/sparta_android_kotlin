@@ -4,9 +4,12 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.potatomeme.todoapp.R
@@ -20,6 +23,8 @@ import com.potatomeme.todoapp.todo.TodoFragment
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private val viewModel : MainViewModel by viewModels()
+
 
     private val viewPagerAdapter by lazy {
         ViewPagerAdapter(this)
@@ -48,19 +53,21 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     actvityResult.data?.getParcelableExtra(ContentActivity.INTENT_KEY_TODO_MODEL)
                 }
-                val todoFragment: TodoFragment? = viewPagerAdapter.getTodoFragment()
-
+                Log.d(TAG, todo.toString())
                 when (contentType) {
-                    TodoContentType.ADD -> if (todo != null) todoFragment?.submitTodo(todo)
-                    TodoContentType.EDIT -> if (todo != null) todoFragment?.updateTodo(todo)
+                    TodoContentType.ADD -> if (todo != null) viewModel.insertTodo(todo)
+                    TodoContentType.EDIT -> if (todo != null) viewModel.changedTodo(todo)
                     null -> {}
                 }
             }
             ContentActivity.RESULT_DELETE -> {
                 val todoId = actvityResult.data?.getIntExtra(ContentActivity.INTENT_KEY_TODO_ID, 0)
-                val todoFragment: TodoFragment? = viewPagerAdapter.getTodoFragment()
-                if (todoId != null) todoFragment?.deleteTodo(todoId)
+                if (todoId != null) viewModel.removeTodoWithId(todoId)
             }
+        }
+
+        viewModel.todoList.observe(this) {
+            Log.d(TAG, "main Activity ${it.joinToString(" ")} ")
         }
     }
 
