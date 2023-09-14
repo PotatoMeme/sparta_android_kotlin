@@ -1,14 +1,16 @@
 package com.potatomeme.todoapp.todo
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.potatomeme.todoapp.adapter.RecyclerviewAdapter
 import com.potatomeme.todoapp.databinding.FragmentTodoBinding
 import com.potatomeme.todoapp.main.MainActivity
+import com.potatomeme.todoapp.main.MainViewModel
 import com.potatomeme.todoapp.model.Todo
 
 
@@ -22,7 +24,9 @@ class TodoFragment : Fragment() {
     private val binding: FragmentTodoBinding
         get() = _binding!!
 
-    private val listAdapter by lazy {
+    private val viewModel: MainViewModel by activityViewModels()
+
+    private val listAdapter : RecyclerviewAdapter by lazy {
         RecyclerviewAdapter(object : RecyclerviewAdapter.EventListener {
             override fun onClickEventListenr(todo: Todo) {
                 if (activity is MainActivity) {
@@ -34,6 +38,10 @@ class TodoFragment : Fragment() {
                             )
                         )
                 }
+            }
+
+            override fun changedSwitch(todoId: Int) {
+                viewModel.changedTagWithId(todoId)
             }
         })
     }
@@ -47,17 +55,6 @@ class TodoFragment : Fragment() {
         return binding.root
     }
 
-    fun submitTodo(todo: Todo) {
-        listAdapter.addItem(todo)
-    }
-
-    fun updateTodo(todo: Todo) {
-        listAdapter.updateItem(todo)
-    }
-
-    fun deleteTodo(id:Int){
-        listAdapter.deleteTodo(id)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -67,6 +64,12 @@ class TodoFragment : Fragment() {
     private fun initView() = with(binding) {
         todoRecyclerview.adapter = listAdapter
         todoRecyclerview.layoutManager = LinearLayoutManager(this@TodoFragment.context)
+        viewModel.todoList.observe(viewLifecycleOwner) {
+            listAdapter.submitList(it.toList())
+            //listAdapter.notifyDataSetChanged()
+            //Log.d(TAG, "todo fragment ${it.joinToString(" ")} ")
+            //Log.d(TAG, "todo fragment adapter ${listAdapter.currentList.joinToString(" ")} ")
+        }
     }
 
     override fun onDestroyView() {

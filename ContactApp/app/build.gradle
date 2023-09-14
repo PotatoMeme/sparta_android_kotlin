@@ -1,16 +1,14 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-parcelize'
-    id 'kotlin-android'
 }
 
 android {
-    namespace 'com.potatomeme.todoapp'
+    namespace 'com.team8.contactapp'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.potatomeme.todoapp"
+        applicationId "com.team8.contactapp"
         minSdk 24
         targetSdk 33
         versionCode 1
@@ -32,9 +30,6 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    buildFeatures {
-        viewBinding = true
-    }
 }
 
 dependencies {
@@ -43,14 +38,6 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    //use viewmodel
-    implementation 'androidx.fragment:fragment-ktx:1.6.1'
-    implementation 'androidx.activity:activity-ktx:1.7.2'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
-    //use livedata
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.2'
-
-
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

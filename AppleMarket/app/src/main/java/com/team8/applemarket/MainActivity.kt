@@ -1,6 +1,7 @@
 package com.team8.applemarket
 
 import android.app.NotificationChannel
+import android.app.NotificationChannelGroup
 import android.app.NotificationManager
 import android.content.Context
 import android.content.DialogInterface
@@ -126,6 +127,7 @@ class MainActivity : AppCompatActivity() {
             itemRecyclerView.smoothScrollToPosition(0)
         }
 
+        var id = 0
         notificationImgaeView.setOnClickListener {
             //todo 알림 기능
             val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -143,6 +145,7 @@ class MainActivity : AppCompatActivity() {
                         .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                         .setUsage(AudioAttributes.USAGE_ALARM)
                         .build()
+                    setShowBadge(true)
                     setSound(uri, audioAttributes)
                     enableVibration(true)
                 }
@@ -158,14 +161,14 @@ class MainActivity : AppCompatActivity() {
                 setSmallIcon(R.mipmap.ic_launcher)
                 setWhen(System.currentTimeMillis())
                 setContentTitle("키워드 알림")
+                setNumber(10)
                 setContentText("설정한 키워드에 대한 알림이 도착했습니다!!")
                 setStyle(
                     NotificationCompat.BigTextStyle()
                         .bigText("설정한 키워드에 대한 알림이 도착했습니다!!")
                 )
             }
-
-            manager.notify(NOTIFICATION_ID, builder.build())
+            manager.notify(NOTIFICATION_ID+id++, builder.build())
         }
     }
 
