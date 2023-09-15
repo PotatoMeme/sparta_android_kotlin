@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "PracticeSpace"
 include ':app'
 include ':room'
+include ':googlemap'
