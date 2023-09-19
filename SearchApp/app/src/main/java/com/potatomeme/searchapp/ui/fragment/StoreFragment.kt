@@ -1,4 +1,4 @@
-package com.potatomeme.searchapp
+package com.potatomeme.searchapp.ui.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.potatomeme.searchapp.ui.adapter.SearchRecyclerViewAdapter
 import com.potatomeme.searchapp.databinding.FragmentStoreBinding
+import com.potatomeme.searchapp.data.model.SampleItem
 
 class StoreFragment : Fragment() {
 
@@ -22,7 +24,7 @@ class StoreFragment : Fragment() {
         get() = _binding!!
 
     private val recyclerViewAdapter : SearchRecyclerViewAdapter by lazy {
-        SearchRecyclerViewAdapter(object : SearchRecyclerViewAdapter.EventListener{
+        SearchRecyclerViewAdapter(object : SearchRecyclerViewAdapter.EventListener {
             override fun onClickEventListener() {
                 Log.d(TAG, "onClickEventListener: ")
                 // todo webview로 가서 동작할수 있도록

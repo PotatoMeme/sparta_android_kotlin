@@ -1,14 +1,20 @@
-package com.potatomeme.searchapp
+package com.potatomeme.searchapp.ui.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.potatomeme.searchapp.databinding.ItemSearchBinding
+import com.potatomeme.searchapp.data.model.Item
+import com.potatomeme.searchapp.data.model.image.Document
+import com.potatomeme.searchapp.data.model.image.ImageResponse
 
-class SearchRecyclerViewAdapter(val listener : EventListener) : ListAdapter<Item,SearchRecyclerViewAdapter.ViewHolder>(diffUtil) {
+class SearchRecyclerViewAdapter(val listener : EventListener) : ListAdapter<Item, SearchRecyclerViewAdapter.ViewHolder>(
+    diffUtil
+) {
 
     interface EventListener{
 
@@ -43,6 +49,8 @@ class SearchRecyclerViewAdapter(val listener : EventListener) : ListAdapter<Item
 
             titleTextView.text = item.title
             dateTextView.text = item.date
+
+            if (item is Document) playImageView.visibility = View.GONE
 
             favoriteImageView.setOnClickListener {
                 favoriteImageView.isSelected = !favoriteImageView.isSelected

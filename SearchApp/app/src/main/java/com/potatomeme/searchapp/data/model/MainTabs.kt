@@ -1,4 +1,4 @@
-package com.potatomeme.searchapp
+package com.potatomeme.searchapp.data.model
 
 import androidx.fragment.app.Fragment
 

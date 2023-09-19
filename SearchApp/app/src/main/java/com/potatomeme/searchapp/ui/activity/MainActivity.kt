@@ -1,9 +1,12 @@
-package com.potatomeme.searchapp
+package com.potatomeme.searchapp.ui.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.viewModels
 import com.google.android.material.tabs.TabLayoutMediator
+import com.potatomeme.searchapp.ui.adapter.ViewPagerAdapter
 import com.potatomeme.searchapp.databinding.ActivityMainBinding
+import com.potatomeme.searchapp.ui.viewmodel.MainViewModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -11,6 +14,7 @@ class MainActivity : AppCompatActivity() {
 
     private val viewPagerAdapter by lazy { ViewPagerAdapter(this) }
 
+    private val viewmodel : MainViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)

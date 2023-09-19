@@ -1,7 +1,8 @@
-package com.potatomeme.searchapp
+package com.potatomeme.searchapp.data.model
 
 interface Item {
     val imgUrl : String
     val title : String
     val date : String
+    val link : String
 }

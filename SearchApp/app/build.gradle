@@ -3,6 +3,9 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     namespace 'com.potatomeme.searchapp'
     compileSdk 33
@@ -14,13 +17,22 @@ android {
         versionCode 1
         versionName "1.0"
 
+        //buildConfigField "String", "SAMPLE_API_KEY", properties["API_KEY"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {
         release {
+            buildConfigField "String", "SAMPLE_API_KEY", properties["API_KEY"]
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            buildConfigField "String", "SAMPLE_API_KEY", properties["API_KEY"]
         }
     }
     compileOptions {
@@ -49,4 +61,17 @@ dependencies {
 
     //use glide
     implementation 'com.github.bumptech.glide:glide:4.16.0'
+    //use viewmodel
+    implementation 'androidx.fragment:fragment-ktx:1.6.1'
+    implementation 'androidx.activity:activity-ktx:1.7.2'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
+    //use livedata
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.2'
+    // use gson
+    implementation 'com.google.code.gson:gson:2.10.1'
+    // use retrofit2
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0'
 }

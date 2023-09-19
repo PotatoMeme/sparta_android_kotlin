@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.potatomeme.todoapp.model.Todo
 
-class MainViewModel : ViewModel() {
+class  MainViewModel : ViewModel() {
     private val list = mutableListOf<Todo>()
 
     private val _todoList: MutableLiveData<List<Todo>> = MutableLiveData()

@@ -1,8 +1,12 @@
-package com.potatomeme.searchapp
+package com.potatomeme.searchapp.ui.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.potatomeme.searchapp.R
+import com.potatomeme.searchapp.data.model.MainTabs
+import com.potatomeme.searchapp.ui.fragment.SearchFragment
+import com.potatomeme.searchapp.ui.fragment.StoreFragment
 
 class ViewPagerAdapter(fragmentActivity: FragmentActivity) :
     FragmentStateAdapter(fragmentActivity) {

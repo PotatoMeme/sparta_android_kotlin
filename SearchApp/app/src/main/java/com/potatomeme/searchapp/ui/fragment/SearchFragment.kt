@@ -1,7 +1,6 @@
-package com.potatomeme.searchapp
+package com.potatomeme.searchapp.ui.fragment
 
 import android.content.Context.INPUT_METHOD_SERVICE
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -13,12 +12,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.TextView
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.potatomeme.searchapp.ui.adapter.SearchRecyclerViewAdapter
 import com.potatomeme.searchapp.databinding.FragmentSearchBinding
+import com.potatomeme.searchapp.data.model.SampleItem
+import com.potatomeme.searchapp.ui.viewmodel.MainViewModel
 
 
 class SearchFragment : Fragment() {
@@ -32,8 +33,9 @@ class SearchFragment : Fragment() {
     private val binding: FragmentSearchBinding
         get() = _binding!!
 
+    private val viewModel: MainViewModel by activityViewModels()
     private val searchRecyclerViewAdapter : SearchRecyclerViewAdapter by lazy {
-        SearchRecyclerViewAdapter(object : SearchRecyclerViewAdapter.EventListener{
+        SearchRecyclerViewAdapter(object : SearchRecyclerViewAdapter.EventListener {
             override fun onClickEventListener() {
                 Log.d(TAG, "onClickEventListener: ")
                 // todo webview로 가서 동작할수 있도록
@@ -124,6 +126,7 @@ class SearchFragment : Fragment() {
                         activity?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(windowToken,0)
                     //todo search process
+                    viewModel.searchApi(text.toString())
                     return@setOnKeyListener true
                 }
                 return@setOnKeyListener false
@@ -137,14 +140,11 @@ class SearchFragment : Fragment() {
             val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
             layoutManager = staggeredGridLayoutManager
         }
-        searchRecyclerViewAdapter.submitList(
-            listOf(
-                SampleItem("https://post-phinf.pstatic.net/MjAyMDEyMTdfMjkg/MDAxNjA4MTY0Nzk2Mjk2.pp6tAopw3C_Cn8PF9yKjgIvPwepQ1EKNptA_tYCZJdUg.FS5-ZDvejdzWXy-HV9xhVxb95tICXbtO4I4bvR0497Qg.PNG/image.png?type=w1200&type=w1200&type=w1200&type=w1200&type=w1200&type=w1200&type=w1200","ssdsdssdsssssssssss","2023-09-17 21:00:00"),
-                SampleItem("https://post-phinf.pstatic.net/MjAyMTAxMjdfMTky/MDAxNjExNzIzMTk4MTY2.zwgrFaN9M8eE_Ad09rY5uXEXjZ-kijO5xmVtPGpwX5sg.sz5nMRCBOOpC0L-I03gAQaNO9Yt8HwivLLw-ZNV3t6cg.PNG/image.png?type=w1200&type=w1200&type=w1200&type=w1200","ssdsdssdsssssssssss","2023-09-17 21:00:00"),
-                SampleItem("https://post-phinf.pstatic.net/MjAyMDA5MThfMjI5/MDAxNjAwMzkwMTY1NDk3.RMdJQrrYyo67i9JRAIoBJP3cCVzX-2hj1coK_id1sLUg.TLRlC3m8eXl6D-iHh0JlKc8JJBOxfgwFfzM_KNECjnIg.PNG/image.png?type=w1200&type=w1200","ssdsdssdsssssssssss","2023-09-17 21:00:00"),
-                SampleItem("https://post-phinf.pstatic.net/MjAyMTAyMDhfNDUg/MDAxNjEyNzQzOTA4NDcx.i-fwdfb34to1TfmTDJgDfd7bPUUyuL6u3S_fsyGMGYQg.2gD8RWqDcbjQ-9SKyMh1ew9LniVA5bSF-o-bw08EuRwg.PNG/image.png?type=w1200&type=w1200&type=w1200","ssdsdssdsssssssssss","2023-09-17 21:00:00"),
-            )
-        )
+
+        viewModel.itemList.observe(viewLifecycleOwner){
+            searchRecyclerViewAdapter.submitList(it.toList())
+        }
+
     }
 
 
