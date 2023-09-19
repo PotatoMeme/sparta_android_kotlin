@@ -9,38 +9,39 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.potatomeme.searchapp.databinding.ItemSearchBinding
 import com.potatomeme.searchapp.data.model.Item
-import com.potatomeme.searchapp.data.model.image.Document
-import com.potatomeme.searchapp.data.model.image.ImageResponse
+import com.potatomeme.searchapp.data.model.image.ImageDocument
 
-class SearchRecyclerViewAdapter(val listener : EventListener) : ListAdapter<Item, SearchRecyclerViewAdapter.ViewHolder>(
-    diffUtil
-) {
+class SearchRecyclerViewAdapter(val listener: EventListener) :
+    ListAdapter<Item, SearchRecyclerViewAdapter.ViewHolder>(
+        diffUtil
+    ) {
 
-    interface EventListener{
+    interface EventListener {
 
-        fun onClickEventListener()
+        fun onClickEventListener(item: Item)
 
-        fun onFavoritImageClicked()
+        fun onFavoritImageClicked(item: Item)
     }
 
-    companion object{
+    companion object {
         private val diffUtil = object : DiffUtil.ItemCallback<Item>() {
             override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
                 return oldItem == newItem
             }
 
             override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
-                return oldItem.title == newItem.title
+                return oldItem.imgUrl == newItem.imgUrl
             }
 
         }
     }
 
 
-    inner class ViewHolder(private val binding: ItemSearchBinding): RecyclerView.ViewHolder(binding.root){
-        fun bind(item: Item) = with(binding){
+    inner class ViewHolder(private val binding: ItemSearchBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Item) = with(binding) {
             root.setOnClickListener {
-                listener.onClickEventListener()
+                listener.onClickEventListener(item)
             }
 
             Glide.with(root)
@@ -50,20 +51,27 @@ class SearchRecyclerViewAdapter(val listener : EventListener) : ListAdapter<Item
             titleTextView.text = item.title
             dateTextView.text = item.date
 
-            if (item is Document) playImageView.visibility = View.GONE
+            favoriteImageView.isSelected = item.isFavorite
+
+            if (item is ImageDocument) playImageView.visibility = View.GONE
+            else playImageView.visibility = View.VISIBLE
 
             favoriteImageView.setOnClickListener {
                 favoriteImageView.isSelected = !favoriteImageView.isSelected
+                item.isFavorite = favoriteImageView.isSelected
+                listener.onFavoritImageClicked(item)
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ItemSearchBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        ))
+        return ViewHolder(
+            ItemSearchBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

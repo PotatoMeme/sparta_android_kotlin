@@ -16,6 +16,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.potatomeme.searchapp.data.model.Item
 import com.potatomeme.searchapp.ui.adapter.SearchRecyclerViewAdapter
 import com.potatomeme.searchapp.databinding.FragmentSearchBinding
 import com.potatomeme.searchapp.data.model.SampleItem
@@ -34,16 +35,21 @@ class SearchFragment : Fragment() {
         get() = _binding!!
 
     private val viewModel: MainViewModel by activityViewModels()
-    private val searchRecyclerViewAdapter : SearchRecyclerViewAdapter by lazy {
+    private val searchRecyclerViewAdapter: SearchRecyclerViewAdapter by lazy {
         SearchRecyclerViewAdapter(object : SearchRecyclerViewAdapter.EventListener {
-            override fun onClickEventListener() {
+            override fun onClickEventListener(item: Item) {
                 Log.d(TAG, "onClickEventListener: ")
                 // todo webview로 가서 동작할수 있도록
             }
 
-            override fun onFavoritImageClicked() {
+            override fun onFavoritImageClicked(item: Item) {
                 Log.d(TAG, "onFavoritImageClicked: ")
                 // todo 좋아요 버튼 동작
+                if (item.isFavorite){
+                    viewModel.addFavoriteItem(item)
+                }else{
+                    viewModel.removeFavoriteItem(item)
+                }
             }
         })
     }
@@ -124,7 +130,7 @@ class SearchFragment : Fragment() {
                 if (event.action == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     val imm: InputMethodManager =
                         activity?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(windowToken,0)
+                    imm.hideSoftInputFromWindow(windowToken, 0)
                     //todo search process
                     viewModel.searchApi(text.toString())
                     return@setOnKeyListener true
@@ -137,12 +143,13 @@ class SearchFragment : Fragment() {
         searchRecyclerView.apply {
             adapter = searchRecyclerViewAdapter
 
-            val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
+            val staggeredGridLayoutManager =
+                StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
             layoutManager = staggeredGridLayoutManager
         }
 
-        viewModel.itemList.observe(viewLifecycleOwner){
-            searchRecyclerViewAdapter.submitList(it.toList())
+        viewModel.itemList.observe(viewLifecycleOwner) {
+            searchRecyclerViewAdapter.submitList(it)
         }
 
     }

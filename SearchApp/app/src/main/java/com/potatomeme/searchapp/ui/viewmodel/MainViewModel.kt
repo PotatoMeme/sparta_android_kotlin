@@ -20,7 +20,14 @@ class MainViewModel : ViewModel() {
     private val _itemList: MutableLiveData<List<Item>> = MutableLiveData()
     val itemList: LiveData<List<Item>>
         get() = _itemList
-    val searchRepository: SearchRepository = SearchRepositoryImpl()
+
+    private val mutableFavoriteItemList : MutableList<Item> = mutableListOf()
+    private val _favoriteItemList: MutableLiveData<List<Item>> = MutableLiveData()
+    val favoriteItemList: LiveData<List<Item>>
+        get() = _favoriteItemList
+
+
+    private val searchRepository: SearchRepository = SearchRepositoryImpl()
 
     fun searchApi(query: String) = viewModelScope.launch(Dispatchers.IO) {
         val arrayList: ArrayList<Item> = arrayListOf()
@@ -46,10 +53,27 @@ class MainViewModel : ViewModel() {
             Log.d(TAG, imageResponse.message())
         }
 
-        arrayList.sortBy { it.date }
+        arrayList.sortByDescending { it.date }
+
+        for (index in arrayList.indices){
+            arrayList[index].isFavorite = mutableFavoriteItemList.any { it.imgUrl == arrayList[index].imgUrl }
+        }
+
         //Log.d(TAG, "searchApi: ${_itemList.value?.size} ${arrayList.size}")
         _itemList.postValue(arrayList)
         //Log.d(TAG, "searchApi: ${_itemList.value?.size}")
     }
 
+    fun addFavoriteItem(item: Item){
+        mutableFavoriteItemList.add(item)
+        _favoriteItemList.value = mutableFavoriteItemList
+    }
+
+    fun removeFavoriteItem(item: Item){
+        val removeIndex = mutableFavoriteItemList.indexOfFirst { it.imgUrl == item.imgUrl }
+        if (removeIndex != -1){
+            mutableFavoriteItemList.removeAt(removeIndex)
+            _favoriteItemList.value = mutableFavoriteItemList
+        }
+    }
 }

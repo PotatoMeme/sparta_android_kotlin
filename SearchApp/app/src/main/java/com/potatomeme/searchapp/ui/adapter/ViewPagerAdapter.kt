@@ -21,7 +21,7 @@ class ViewPagerAdapter(fragmentActivity: FragmentActivity) :
         )
         fragments.add(
             MainTabs(
-                StoreFragment.newInstance(), R.string.search
+                StoreFragment.newInstance(), R.string.store
             )
         )
     }

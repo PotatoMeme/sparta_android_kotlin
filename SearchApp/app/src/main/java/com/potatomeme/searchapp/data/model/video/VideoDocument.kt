@@ -3,7 +3,7 @@ package com.potatomeme.searchapp.data.model.video
 import com.google.gson.annotations.SerializedName
 import com.potatomeme.searchapp.data.model.Item
 
-data class Document(
+data class VideoDocument(
     val author: String,
     @SerializedName("datetime")
     override val date: String,
@@ -13,4 +13,7 @@ data class Document(
     override val title: String,
     @SerializedName("url")
     override val link: String
-): Item
+): Item {
+    override val isImage: Boolean = false
+    override var isFavorite: Boolean = false
+}
