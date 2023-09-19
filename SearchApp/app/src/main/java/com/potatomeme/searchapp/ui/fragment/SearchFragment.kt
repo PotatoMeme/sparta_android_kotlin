@@ -20,7 +20,10 @@ import com.potatomeme.searchapp.data.model.Item
 import com.potatomeme.searchapp.ui.adapter.SearchRecyclerViewAdapter
 import com.potatomeme.searchapp.databinding.FragmentSearchBinding
 import com.potatomeme.searchapp.data.model.SampleItem
+import com.potatomeme.searchapp.data.repository.SearchRepositoryImpl
+import com.potatomeme.searchapp.data.sharedpreferences.MySharedPreferences
 import com.potatomeme.searchapp.ui.viewmodel.MainViewModel
+import com.potatomeme.searchapp.ui.viewmodel.MainViewModelFactory
 
 
 class SearchFragment : Fragment() {
@@ -34,7 +37,9 @@ class SearchFragment : Fragment() {
     private val binding: FragmentSearchBinding
         get() = _binding!!
 
-    private val viewModel: MainViewModel by activityViewModels()
+    private val viewModel: MainViewModel by activityViewModels{
+        MainViewModelFactory(SearchRepositoryImpl(MySharedPreferences(requireContext())))
+    }
     private val searchRecyclerViewAdapter: SearchRecyclerViewAdapter by lazy {
         SearchRecyclerViewAdapter(object : SearchRecyclerViewAdapter.EventListener {
             override fun onClickEventListener(item: Item) {

@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MainViewModel : ViewModel() {
+class MainViewModel(private val searchRepository: SearchRepository) : ViewModel() {
     companion object {
         private const val TAG = "MainViewModel"
     }
@@ -21,13 +21,13 @@ class MainViewModel : ViewModel() {
     val itemList: LiveData<List<Item>>
         get() = _itemList
 
-    private val mutableFavoriteItemList : MutableList<Item> = mutableListOf()
-    private val _favoriteItemList: MutableLiveData<List<Item>> = MutableLiveData()
+    private val mutableFavoriteItemList : MutableList<Item> = searchRepository.getListItem().toMutableList()
+
+    private val _favoriteItemList: MutableLiveData<List<Item>> = MutableLiveData<List<Item>>().apply {
+        value = mutableFavoriteItemList
+    }
     val favoriteItemList: LiveData<List<Item>>
         get() = _favoriteItemList
-
-
-    private val searchRepository: SearchRepository = SearchRepositoryImpl()
 
     fun searchApi(query: String) = viewModelScope.launch(Dispatchers.IO) {
         val arrayList: ArrayList<Item> = arrayListOf()
@@ -67,6 +67,7 @@ class MainViewModel : ViewModel() {
     fun addFavoriteItem(item: Item){
         mutableFavoriteItemList.add(item)
         _favoriteItemList.value = mutableFavoriteItemList
+        searchRepository.saveListItem(mutableFavoriteItemList)
     }
 
     fun removeFavoriteItem(item: Item){
@@ -74,6 +75,7 @@ class MainViewModel : ViewModel() {
         if (removeIndex != -1){
             mutableFavoriteItemList.removeAt(removeIndex)
             _favoriteItemList.value = mutableFavoriteItemList
+            searchRepository.saveListItem(mutableFavoriteItemList)
         }
     }
 }

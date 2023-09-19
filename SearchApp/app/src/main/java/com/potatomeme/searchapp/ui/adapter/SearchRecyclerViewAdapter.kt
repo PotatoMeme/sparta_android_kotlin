@@ -1,5 +1,6 @@
 package com.potatomeme.searchapp.ui.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.potatomeme.searchapp.databinding.ItemSearchBinding
 import com.potatomeme.searchapp.data.model.Item
+import com.potatomeme.searchapp.data.model.SampleItem
 import com.potatomeme.searchapp.data.model.image.ImageDocument
+import kotlin.math.log
 
 class SearchRecyclerViewAdapter(val listener: EventListener) :
     ListAdapter<Item, SearchRecyclerViewAdapter.ViewHolder>(
@@ -24,6 +27,7 @@ class SearchRecyclerViewAdapter(val listener: EventListener) :
     }
 
     companion object {
+        private const val TAG = "SearchRecyclerViewAdapt"
         private val diffUtil = object : DiffUtil.ItemCallback<Item>() {
             override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
                 return oldItem == newItem
@@ -44,6 +48,7 @@ class SearchRecyclerViewAdapter(val listener: EventListener) :
                 listener.onClickEventListener(item)
             }
 
+            Log.d(TAG, "bind: ${item}")
             Glide.with(root)
                 .load(item.imgUrl)
                 .into(itemImgaeView)
@@ -59,7 +64,14 @@ class SearchRecyclerViewAdapter(val listener: EventListener) :
             favoriteImageView.setOnClickListener {
                 favoriteImageView.isSelected = !favoriteImageView.isSelected
                 item.isFavorite = favoriteImageView.isSelected
-                listener.onFavoritImageClicked(item)
+                listener.onFavoritImageClicked(SampleItem(
+                    item.imgUrl,
+                    item.title,
+                    item.date,
+                    item.link,
+                    item.isImage,
+                    item.isFavorite
+                ))
             }
         }
     }
