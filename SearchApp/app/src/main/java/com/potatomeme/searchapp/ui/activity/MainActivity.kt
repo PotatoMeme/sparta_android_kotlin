@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     private val viewPagerAdapter by lazy { ViewPagerAdapter(this) }
 
-    private val viewmodel: MainViewModel by viewModels {
+    private val viewmodel: MainViewModel by viewModels() {
         MainViewModelFactory(SearchRepositoryImpl(MySharedPreferences(this)))
     }
 

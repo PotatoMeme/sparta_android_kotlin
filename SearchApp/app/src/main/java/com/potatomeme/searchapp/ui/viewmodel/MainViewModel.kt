@@ -21,13 +21,15 @@ class MainViewModel(private val searchRepository: SearchRepository) : ViewModel(
     val itemList: LiveData<List<Item>>
         get() = _itemList
 
-    private val mutableFavoriteItemList : MutableList<Item> = searchRepository.getListItem().toMutableList()
 
-    private val _favoriteItemList: MutableLiveData<List<Item>> = MutableLiveData<List<Item>>().apply {
-        value = mutableFavoriteItemList
-    }
+    private val _favoriteItemList: MutableLiveData<List<Item>> = MutableLiveData()
     val favoriteItemList: LiveData<List<Item>>
         get() = _favoriteItemList
+
+
+    init {
+        _favoriteItemList.value = searchRepository.getListItem()
+    }
 
     fun searchApi(query: String) = viewModelScope.launch(Dispatchers.IO) {
         val arrayList: ArrayList<Item> = arrayListOf()
@@ -56,7 +58,7 @@ class MainViewModel(private val searchRepository: SearchRepository) : ViewModel(
         arrayList.sortByDescending { it.date }
 
         for (index in arrayList.indices){
-            arrayList[index].isFavorite = mutableFavoriteItemList.any { it.imgUrl == arrayList[index].imgUrl }
+            arrayList[index].isFavorite = favoriteItemList.value.orEmpty().any { it.imgUrl == arrayList[index].imgUrl }
         }
 
         //Log.d(TAG, "searchApi: ${_itemList.value?.size} ${arrayList.size}")
@@ -64,19 +66,32 @@ class MainViewModel(private val searchRepository: SearchRepository) : ViewModel(
         //Log.d(TAG, "searchApi: ${_itemList.value?.size}")
     }
 
+    private fun changeItemInSeachList(item : Item){
+        val currentList = itemList.value.orEmpty().toMutableList()
+        val changedItemIndex = currentList.indexOfFirst { it.imgUrl == item.imgUrl }
+        if (changedItemIndex != -1){
+            currentList[changedItemIndex] = item
+            _itemList.value = currentList
+        }
+    }
+
     fun addFavoriteItem(item: Item){
         Log.d(TAG, "addFavoriteItem: $item")
-        mutableFavoriteItemList.add(item)
-        _favoriteItemList.value = mutableFavoriteItemList
-        searchRepository.saveListItem(mutableFavoriteItemList)
+        val currentList = favoriteItemList.value.orEmpty().toMutableList()
+        currentList.add(item)
+        _favoriteItemList.value = currentList
+        changeItemInSeachList(item)
+        searchRepository.saveListItem(favoriteItemList.value.orEmpty())
     }
 
     fun removeFavoriteItem(item: Item){
-        val removeIndex = mutableFavoriteItemList.indexOfFirst { it.imgUrl == item.imgUrl }
+        val currentList = favoriteItemList.value.orEmpty().toMutableList()
+        val removeIndex = currentList.indexOfFirst { it.imgUrl == item.imgUrl }
         if (removeIndex != -1){
-            mutableFavoriteItemList.removeAt(removeIndex)
-            _favoriteItemList.value = mutableFavoriteItemList
-            searchRepository.saveListItem(mutableFavoriteItemList)
+            currentList.removeAt(removeIndex)
+            _favoriteItemList.value = currentList
+            changeItemInSeachList(item)
+            searchRepository.saveListItem(favoriteItemList.value.orEmpty())
         }
     }
 }

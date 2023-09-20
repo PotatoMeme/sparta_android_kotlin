@@ -31,11 +31,11 @@ class SearchRecyclerViewAdapter(val listener: EventListener) :
         private const val TAG = "SearchRecyclerViewAdapt"
         private val diffUtil = object : DiffUtil.ItemCallback<Item>() {
             override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
-                return oldItem == newItem
+                return oldItem.imgUrl == newItem.imgUrl
             }
 
             override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
-                return oldItem.imgUrl == newItem.imgUrl
+                return oldItem.imgUrl == newItem.imgUrl && oldItem.isFavorite == newItem.isFavorite
             }
 
         }
@@ -67,8 +67,8 @@ class SearchRecyclerViewAdapter(val listener: EventListener) :
 
             favoriteImageView.setOnClickListener {
                 favoriteImageView.isSelected = !favoriteImageView.isSelected
-                item.isFavorite = favoriteImageView.isSelected
-                listener.onFavoritImageClicked(item.toSampleItem())
+                //item.isFavorite = favoriteImageView.isSelected
+                listener.onFavoritImageClicked(item.toSampleItem().copy(isFavorite = favoriteImageView.isSelected))
             }
         }
     }

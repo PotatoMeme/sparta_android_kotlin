@@ -156,9 +156,9 @@ class SearchFragment : Fragment() {
         }
 
         viewModel.itemList.observe(viewLifecycleOwner) {
+            Log.d(TAG, "item list changed")
             searchRecyclerViewAdapter.submitList(it)
         }
-
     }
 
 

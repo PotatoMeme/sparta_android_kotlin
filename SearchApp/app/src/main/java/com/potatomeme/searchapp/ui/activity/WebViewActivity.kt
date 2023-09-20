@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.webkit.WebChromeClient
 import android.webkit.WebViewClient
 import androidx.activity.viewModels
@@ -19,6 +20,7 @@ import com.potatomeme.searchapp.ui.viewmodel.MainViewModelFactory
 
 class WebViewActivity : AppCompatActivity() {
     companion object {
+        private const val TAG = "WebViewActivity"
         private const val ITEM = "ITEM"
         fun newIntent(
             context: Context,
@@ -66,10 +68,11 @@ class WebViewActivity : AppCompatActivity() {
             if (favoriteImageView.isSelected){
                 viewmodel.removeFavoriteItem(item!!)
             }else{
-                viewmodel.addFavoriteItem(item!!)
+                viewmodel.addFavoriteItem(item!!.copy(isFavorite = true))
             }
             favoriteImageView.isSelected = !favoriteImageView.isSelected
         }
+        //Log.d(TAG, "initViews: ${viewmodel.itemList.value.orEmpty().size} ")
     }
 
 
