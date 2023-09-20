@@ -65,6 +65,7 @@ class MainViewModel(private val searchRepository: SearchRepository) : ViewModel(
     }
 
     fun addFavoriteItem(item: Item){
+        Log.d(TAG, "addFavoriteItem: $item")
         mutableFavoriteItemList.add(item)
         _favoriteItemList.value = mutableFavoriteItemList
         searchRepository.saveListItem(mutableFavoriteItemList)

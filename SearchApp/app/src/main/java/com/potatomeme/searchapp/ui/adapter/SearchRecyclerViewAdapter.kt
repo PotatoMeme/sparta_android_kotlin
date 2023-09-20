@@ -58,20 +58,26 @@ class SearchRecyclerViewAdapter(val listener: EventListener) :
 
             favoriteImageView.isSelected = item.isFavorite
 
-            if (item is ImageDocument) playImageView.visibility = View.GONE
-            else playImageView.visibility = View.VISIBLE
+            if (item.isImage) {
+                playImageView.visibility = View.GONE
+            } else {
+                playImageView.visibility = View.VISIBLE
+            }
 
             favoriteImageView.setOnClickListener {
                 favoriteImageView.isSelected = !favoriteImageView.isSelected
                 item.isFavorite = favoriteImageView.isSelected
-                listener.onFavoritImageClicked(SampleItem(
+                val sampleItem = SampleItem(
                     item.imgUrl,
                     item.title,
                     item.date,
                     item.link,
                     item.isImage,
                     item.isFavorite
-                ))
+                )
+                Log.d(TAG, "favoriteImageView clicked: ${item.isImage}")
+                Log.d(TAG, "favoriteImageView clicked: $sampleItem")
+                listener.onFavoritImageClicked(sampleItem)
             }
         }
     }

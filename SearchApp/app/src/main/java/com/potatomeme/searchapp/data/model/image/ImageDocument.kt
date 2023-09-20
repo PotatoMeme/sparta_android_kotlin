@@ -18,6 +18,7 @@ data class ImageDocument(
 ) : Item {
     override val title : String
         get() = "[$collection] $display_sitename"
-    override val isImage: Boolean = true
+    override val isImage: Boolean
+        get() = true
     override var isFavorite: Boolean = false
 }
