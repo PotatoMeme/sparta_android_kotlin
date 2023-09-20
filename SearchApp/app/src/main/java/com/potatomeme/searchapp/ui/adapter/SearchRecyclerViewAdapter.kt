@@ -12,6 +12,7 @@ import com.potatomeme.searchapp.databinding.ItemSearchBinding
 import com.potatomeme.searchapp.data.model.Item
 import com.potatomeme.searchapp.data.model.SampleItem
 import com.potatomeme.searchapp.data.model.image.ImageDocument
+import com.potatomeme.searchapp.data.model.toSampleItem
 import kotlin.math.log
 
 class SearchRecyclerViewAdapter(val listener: EventListener) :
@@ -67,17 +68,7 @@ class SearchRecyclerViewAdapter(val listener: EventListener) :
             favoriteImageView.setOnClickListener {
                 favoriteImageView.isSelected = !favoriteImageView.isSelected
                 item.isFavorite = favoriteImageView.isSelected
-                val sampleItem = SampleItem(
-                    item.imgUrl,
-                    item.title,
-                    item.date,
-                    item.link,
-                    item.isImage,
-                    item.isFavorite
-                )
-                Log.d(TAG, "favoriteImageView clicked: ${item.isImage}")
-                Log.d(TAG, "favoriteImageView clicked: $sampleItem")
-                listener.onFavoritImageClicked(sampleItem)
+                listener.onFavoritImageClicked(item.toSampleItem())
             }
         }
     }

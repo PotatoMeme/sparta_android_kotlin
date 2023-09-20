@@ -22,6 +22,7 @@ import com.potatomeme.searchapp.databinding.FragmentSearchBinding
 import com.potatomeme.searchapp.data.model.SampleItem
 import com.potatomeme.searchapp.data.repository.SearchRepositoryImpl
 import com.potatomeme.searchapp.data.sharedpreferences.MySharedPreferences
+import com.potatomeme.searchapp.ui.activity.WebViewActivity
 import com.potatomeme.searchapp.ui.viewmodel.MainViewModel
 import com.potatomeme.searchapp.ui.viewmodel.MainViewModelFactory
 
@@ -37,7 +38,7 @@ class SearchFragment : Fragment() {
     private val binding: FragmentSearchBinding
         get() = _binding!!
 
-    private val viewModel: MainViewModel by activityViewModels{
+    private val viewModel: MainViewModel by activityViewModels {
         MainViewModelFactory(SearchRepositoryImpl(MySharedPreferences(requireContext())))
     }
     private val searchRecyclerViewAdapter: SearchRecyclerViewAdapter by lazy {
@@ -45,14 +46,15 @@ class SearchFragment : Fragment() {
             override fun onClickEventListener(item: Item) {
                 Log.d(TAG, "onClickEventListener: ")
                 // todo webview로 가서 동작할수 있도록
+                startActivity(WebViewActivity.newIntent(requireContext(), item))
             }
 
             override fun onFavoritImageClicked(item: Item) {
                 Log.d(TAG, "onFavoritImageClicked: ")
                 // todo 좋아요 버튼 동작
-                if (item.isFavorite){
+                if (item.isFavorite) {
                     viewModel.addFavoriteItem(item)
-                }else{
+                } else {
                     viewModel.removeFavoriteItem(item)
                 }
             }
