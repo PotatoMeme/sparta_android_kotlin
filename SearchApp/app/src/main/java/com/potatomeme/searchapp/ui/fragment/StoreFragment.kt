@@ -15,6 +15,7 @@ import com.potatomeme.searchapp.databinding.FragmentStoreBinding
 import com.potatomeme.searchapp.data.model.SampleItem
 import com.potatomeme.searchapp.data.repository.SearchRepositoryImpl
 import com.potatomeme.searchapp.data.sharedpreferences.MySharedPreferences
+import com.potatomeme.searchapp.ui.activity.MainActivity
 import com.potatomeme.searchapp.ui.activity.WebViewActivity
 import com.potatomeme.searchapp.ui.viewmodel.MainViewModel
 import com.potatomeme.searchapp.ui.viewmodel.MainViewModelFactory
@@ -38,7 +39,7 @@ class StoreFragment : Fragment() {
             override fun onClickEventListener(item: Item) {
                 Log.d(TAG, "onClickEventListener: ")
                 // todo webview로 가서 동작할수 있도록
-                startActivity(WebViewActivity.newIntent(requireContext(), item))
+                (activity as MainActivity).useActivityResultLauncher(WebViewActivity.newIntent(requireContext(), item))
             }
 
             override fun onFavoritImageClicked(item: Item) {

@@ -7,10 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.potatomeme.searchapp.data.model.Item
 import com.potatomeme.searchapp.data.repository.SearchRepository
-import com.potatomeme.searchapp.data.repository.SearchRepositoryImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainViewModel(private val searchRepository: SearchRepository) : ViewModel() {
     companion object {
@@ -94,4 +92,23 @@ class MainViewModel(private val searchRepository: SearchRepository) : ViewModel(
             searchRepository.saveListItem(favoriteItemList.value.orEmpty())
         }
     }
+
+    fun addFavoriteItemInWebView(item: Item){
+        Log.d(TAG, "addFavoriteItem: $item")
+        val currentList = favoriteItemList.value.orEmpty().toMutableList()
+        currentList.add(item)
+        _favoriteItemList.value = currentList
+        changeItemInSeachList(item)
+    }
+
+    fun removeFavoriteItemInWebView(item: Item){
+        val currentList = favoriteItemList.value.orEmpty().toMutableList()
+        val removeIndex = currentList.indexOfFirst { it.imgUrl == item.imgUrl }
+        if (removeIndex != -1){
+            currentList.removeAt(removeIndex)
+            _favoriteItemList.value = currentList
+            changeItemInSeachList(item)
+        }
+    }
+
 }

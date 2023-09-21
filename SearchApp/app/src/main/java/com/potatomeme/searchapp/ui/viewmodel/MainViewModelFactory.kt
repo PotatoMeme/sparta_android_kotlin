@@ -10,6 +10,5 @@ class MainViewModelFactory(private val searchRepository: SearchRepository) : Vie
             return MainViewModel(searchRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel Class")
-
     }
 }

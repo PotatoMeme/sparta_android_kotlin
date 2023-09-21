@@ -21,7 +21,8 @@ import com.potatomeme.searchapp.ui.viewmodel.MainViewModelFactory
 class WebViewActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "WebViewActivity"
-        private const val ITEM = "ITEM"
+        const val ITEM = "ITEM"
+        const val FAVORITE_CHANGED = "FAVORITE_CHANGED"
         fun newIntent(
             context: Context,
             item: Item,
@@ -61,14 +62,20 @@ class WebViewActivity : AppCompatActivity() {
             loadUrl(item?.link!!)
         }
 
-        backArrowImageView.setOnClickListener { finish() }
+        backArrowImageView.setOnClickListener {
+            if (binding.favoriteImageView.isSelected != item?.isFavorite) {
+                intent.putExtra(FAVORITE_CHANGED,true)
+                setResult(RESULT_OK,intent)
+            }
+            finish()
+        }
         titleTextView.text = item?.title
         favoriteImageView.isSelected = item?.isFavorite!!
         favoriteImageView.setOnClickListener {
             if (favoriteImageView.isSelected){
-                viewmodel.removeFavoriteItem(item!!)
+                viewmodel.removeFavoriteItemInWebView(item!!)
             }else{
-                viewmodel.addFavoriteItem(item!!.copy(isFavorite = true))
+                viewmodel.addFavoriteItemInWebView(item!!.copy(isFavorite = true))
             }
             favoriteImageView.isSelected = !favoriteImageView.isSelected
         }
@@ -80,6 +87,10 @@ class WebViewActivity : AppCompatActivity() {
         if (binding.webView.canGoBack()) {
             binding.webView.goBack()
         } else {
+            if (binding.favoriteImageView.isSelected != item?.isFavorite) {
+                intent.putExtra(FAVORITE_CHANGED,true)
+                setResult(RESULT_OK,intent)
+            }
             finish()
         }
     }
