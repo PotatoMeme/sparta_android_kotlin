@@ -41,7 +41,7 @@
         app:layout_constraintTop_toTopOf="@id/toolbar"
         android:padding="15dp"
         app:layout_constraintBottom_toBottomOf="@id/toolbar"
-        android:src="@drawable/selector_favorite"
+        android:src="@drawable/selector_favorite_webview"
         android:layout_width="?attr/actionBarSize"
         android:layout_height="?attr/actionBarSize"/>
     <WebView
