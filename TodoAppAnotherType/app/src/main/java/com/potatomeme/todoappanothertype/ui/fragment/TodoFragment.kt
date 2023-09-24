@@ -3,17 +3,21 @@ package com.potatomeme.todoappanothertype.ui.fragment
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.jess.camp.todo.home.TodoListAdapter
-import com.potatomeme.todoappanothertype.R
 import com.potatomeme.todoappanothertype.data.model.TodoContentType
 import com.potatomeme.todoappanothertype.data.model.TodoModel
 import com.potatomeme.todoappanothertype.databinding.FragmentTodoBinding
 import com.potatomeme.todoappanothertype.ui.activity.TodoContentActivity
+import com.potatomeme.todoappanothertype.ui.viewmodel.MainSharedEventForTodo
+import com.potatomeme.todoappanothertype.ui.viewmodel.MainSharedViewModel
+import com.potatomeme.todoappanothertype.ui.viewmodel.TodoViewModel
+import com.potatomeme.todoappanothertype.ui.viewmodel.TodoViewModelFactory
 
 
 class TodoFragment : Fragment() {
@@ -21,6 +25,16 @@ class TodoFragment : Fragment() {
     private var _binding: FragmentTodoBinding? = null
     private val binding: FragmentTodoBinding
         get() = _binding!!
+
+    private val sharedViewModel: MainSharedViewModel by lazy {
+        ViewModelProvider(requireActivity())[MainSharedViewModel::class.java]
+    }
+    private val viewModel: TodoViewModel by lazy {
+        ViewModelProvider(
+            this,
+            TodoViewModelFactory()
+        )[TodoViewModel::class.java]
+    }
 
     private val editTodoLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -43,10 +57,12 @@ class TodoFragment : Fragment() {
                 when (TodoContentType.from(entryType)) {
                     TodoContentType.EDIT -> {
                         //수정
+                        viewModel.modifyTodoItemWithPos(position, item)
                     }
 
                     TodoContentType.REMOVE -> {
                         //삭제
+                        viewModel.removeTodoItem(position)
                     }
 
                     else -> Unit // nothing
@@ -66,7 +82,9 @@ class TodoFragment : Fragment() {
                 )
             },
             onBookmarkChecked = { _, item ->
-
+                viewModel.modifyTodoItem(
+                    item = item
+                )
             }
         )
     }
@@ -83,7 +101,10 @@ class TodoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
+        initViewModels()
     }
+
+
 
     /**
      * todo
@@ -93,8 +114,27 @@ class TodoFragment : Fragment() {
         todoList.adapter = listAdapter
     }
 
-    fun addTodoItem(todoModel: TodoModel?) {
+    private fun initViewModels() {
+        with(viewModel){
+            list.observe(viewLifecycleOwner){
+                listAdapter.submitList(it)
+                sharedViewModel.updateBookmarkItems(it)
+            }
+        }
 
+        with(sharedViewModel){
+            todoEvent.observe(viewLifecycleOwner) { todoEvent ->
+                when(todoEvent){
+                    is MainSharedEventForTodo.UpdateTodoItem -> {
+                        viewModel.modifyTodoItem(todoEvent.item)
+                    }
+                }
+            }
+        }
+    }
+
+    fun addTodoItem(todoModel: TodoModel?) {
+        viewModel.addTodoItem(todoModel)
     }
 
     override fun onDestroy() {
