@@ -1,10 +1,14 @@
 package com.potatomeme.todoappanothertype.ui.activity
 
+import android.app.Activity
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.potatomeme.todoappanothertype.R
+import com.potatomeme.todoappanothertype.data.model.TodoModel
 import com.potatomeme.todoappanothertype.databinding.ActivityMainBinding
 import com.potatomeme.todoappanothertype.ui.adapter.MainViewPagerAdapter
 import com.potatomeme.todoappanothertype.ui.fragment.TodoFragment
@@ -16,6 +20,26 @@ class MainActivity : AppCompatActivity() {
     private val viewPagerAdapter by lazy {
         MainViewPagerAdapter(this)
     }
+
+    // 데이터 추가
+    private val addTodoLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val todoModel = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    result.data?.getParcelableExtra(
+                        TodoContentActivity.EXTRA_TODO_MODEL,
+                        TodoModel::class.java
+                    )
+                } else {
+                    result.data?.getParcelableExtra(
+                        TodoContentActivity.EXTRA_TODO_MODEL
+                    )
+                }
+
+                val todoFragment = viewPagerAdapter.getFragment(0) as? TodoFragment
+                todoFragment?.addTodoItem(todoModel)
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,8 +79,9 @@ class MainActivity : AppCompatActivity() {
 
         // fab
         fabAddTodo.setOnClickListener {
-
+            addTodoLauncher.launch(
+                TodoContentActivity.newIntentForAdd(this@MainActivity)
+            )
         }
-
     }
 }
